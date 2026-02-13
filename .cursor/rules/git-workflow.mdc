@@ -1,0 +1,10 @@
+---
+description: Git workflow — never run git add, commit or push automatically
+alwaysApply: true
+---
+
+# Git workflow
+
+- **Never** run `git add`, `git commit` or `git push` yourself.
+- Always let the user decide when to stage, commit and push.
+- You may suggest commit messages and provide commands to run, but **never execute them**.

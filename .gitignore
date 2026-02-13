@@ -15,7 +15,6 @@ dist/
 Thumbs.db
 
 # IDE / Editor
-.cursor/
 .vscode/
 .idea/
 *.swp
