@@ -88,6 +88,10 @@ npm run dev             # open http://localhost:4321
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## License
 
 [MIT](LICENSE) — use freely, but please keep the copyright notice and link back to [this repository](https://github.com/maciejaszex/ndexplorer).
