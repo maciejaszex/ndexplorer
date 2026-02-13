@@ -15,7 +15,8 @@ tests/
 │   └── dom.ts       — DOM render/filter functions mirroring app.js logic
 ├── connect.test.ts  — connect screen (5 tests)
 ├── panel.test.ts    — main panel + layout + i18n (11 tests)
-└── logs.test.ts     — log rendering + filtering (7 tests)
+├── logs.test.ts     — log rendering + filtering (7 tests)
+└── view.test.ts     — desktop + mobile view elements and scroll (2 tests)
 ```
 
 ## Approach

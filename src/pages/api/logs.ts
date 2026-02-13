@@ -2,12 +2,41 @@
 import type { APIRoute } from 'astro';
 import { fetchLogs, AppError } from '../../lib/nextdns';
 
+const VALID_STATUSES = new Set(['default', 'blocked', 'allowed', 'error']);
+
+function isISODate(v: string): boolean {
+  return !isNaN(Date.parse(v));
+}
+
 export const GET: APIRoute = async ({ url }) => {
   try {
+    const rawStatus = url.searchParams.get('status') || undefined;
+    const rawFrom = url.searchParams.get('from') || undefined;
+    const rawTo = url.searchParams.get('to') || undefined;
+
+    if (rawStatus && !VALID_STATUSES.has(rawStatus)) {
+      return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'status' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    if (rawFrom && !isISODate(rawFrom)) {
+      return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'from' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    if (rawTo && !isISODate(rawTo)) {
+      return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'to' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const params = {
-      from: url.searchParams.get('from') || undefined,
-      to: url.searchParams.get('to') || undefined,
-      status: url.searchParams.get('status') || undefined,
+      from: rawFrom,
+      to: rawTo,
+      status: rawStatus,
       device: url.searchParams.get('device') || undefined,
       cursor: url.searchParams.get('cursor') || undefined,
     };

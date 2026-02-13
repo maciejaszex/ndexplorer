@@ -78,6 +78,8 @@
       'error.configMissing': 'Brak konfiguracji: NEXTDNS_API_KEY lub NEXTDNS_PROFILE_ID nie ustawione w .env',
       'error.apiError': 'Błąd API NextDNS',
       'error.unknown': 'Nieznany błąd',
+      'error.invalidDate': 'Nieprawidłowa data',
+      'error.invalidParam': 'Nieprawidłowy parametr',
 
       // Toast
       'toast.close': 'Zamknij',
@@ -150,6 +152,8 @@
       'error.configMissing': 'Missing config: NEXTDNS_API_KEY or NEXTDNS_PROFILE_ID not set in .env',
       'error.apiError': 'NextDNS API error',
       'error.unknown': 'Unknown error',
+      'error.invalidDate': 'Invalid date',
+      'error.invalidParam': 'Invalid parameter',
 
       // Toast
       'toast.close': 'Close',

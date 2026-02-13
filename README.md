@@ -84,9 +84,21 @@ npm run dev             # open http://localhost:4321
 
 ## Tests
 
-23 tests across 3 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
+25 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
+
+## Cursor rules
+
+The project includes AI coding rules in `.cursor/rules/` for use with Cursor IDE:
+
+| Rule | Scope | What it does |
+|---|---|---|
+| `git-workflow` | always | Never run git add/commit/push automatically |
+| `tech-stack` | always | Astro + vanilla JS + Tailwind architecture |
+| `security` | always | Read-only, only GET, token server-side |
+| `testing` | `tests/**` | Vitest + happy-dom conventions |
+| `i18n` | `src/pages, scripts, i18n` | PL/EN bilingual UI rules |
 
 ## Contributing
 

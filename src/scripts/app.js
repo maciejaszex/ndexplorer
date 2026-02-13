@@ -53,8 +53,27 @@ const trackerToggleDot = $('#tracker-toggle-dot');
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function show(el) { el.style.display = ''; }
-function hide(el) { el.style.display = 'none'; }
+function show(el) { if (el) el.style.display = ''; }
+function hide(el) { if (el) el.style.display = 'none'; }
+
+function throttle(fn, ms) {
+  let last = 0;
+  let timer = null;
+  return function (...args) {
+    const now = Date.now();
+    const remaining = ms - (now - last);
+    if (remaining <= 0) {
+      last = now;
+      fn.apply(this, args);
+    } else if (!timer) {
+      timer = setTimeout(() => {
+        last = Date.now();
+        timer = null;
+        fn.apply(this, args);
+      }, remaining);
+    }
+  };
+}
 
 function formatDate(isoString) {
   const d = new Date(isoString);
@@ -269,8 +288,16 @@ async function searchLogs(isScroll) {
   try {
     const params = new URLSearchParams();
 
-    if (filterFrom.value) params.set('from', new Date(filterFrom.value).toISOString());
-    if (filterTo.value) params.set('to', new Date(filterTo.value).toISOString());
+    if (filterFrom.value) {
+      const fromDate = new Date(filterFrom.value);
+      if (isNaN(fromDate.getTime())) throw new Error(t('error.invalidDate'));
+      params.set('from', fromDate.toISOString());
+    }
+    if (filterTo.value) {
+      const toDate = new Date(filterTo.value);
+      if (isNaN(toDate.getTime())) throw new Error(t('error.invalidDate'));
+      params.set('to', toDate.toISOString());
+    }
     if (filterStatus.value) params.set('status', filterStatus.value);
     if (filterDevice.value) params.set('device', filterDevice.value);
     if (isScroll && state.cursor) params.set('cursor', state.cursor);
@@ -515,8 +542,6 @@ function handleInfiniteScroll() {
   }
 }
 
-window.addEventListener('scroll', handleInfiniteScroll);
-
 // ─── Scroll navigation ─────────────────────────────────────────────────────
 
 const scrollBottomBtn = $('#scroll-bottom-btn');
@@ -529,15 +554,24 @@ function updateScrollBtns() {
   const nearBottom = scrollHeight - scrollY - innerHeight < 200;
   const hasEnoughContent = state.logCount >= 500;
 
-  scrollTopBtn.style.opacity = scrolledDown ? '1' : '0';
-  scrollTopBtn.style.pointerEvents = scrolledDown ? 'auto' : 'none';
+  if (scrollTopBtn) {
+    scrollTopBtn.style.opacity = scrolledDown ? '1' : '0';
+    scrollTopBtn.style.pointerEvents = scrolledDown ? 'auto' : 'none';
+  }
 
   const showBottom = hasEnoughContent && !nearBottom;
-  scrollBottomBtn.style.opacity = showBottom ? '1' : '0';
-  scrollBottomBtn.style.pointerEvents = showBottom ? 'auto' : 'none';
+  if (scrollBottomBtn) {
+    scrollBottomBtn.style.opacity = showBottom ? '1' : '0';
+    scrollBottomBtn.style.pointerEvents = showBottom ? 'auto' : 'none';
+  }
 }
 
-window.addEventListener('scroll', updateScrollBtns);
+const onScroll = throttle(() => {
+  handleInfiniteScroll();
+  updateScrollBtns();
+}, 100);
+
+window.addEventListener('scroll', onScroll);
 
 scrollTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
