@@ -505,27 +505,28 @@ function applyLocalFilters() {
 
 // ─── Infinite scroll ────────────────────────────────────────────────────────
 
-const logsArea = $('#logs-area');
-
-logsArea.addEventListener('scroll', () => {
+function handleInfiniteScroll() {
   if (state.allLoaded || state.scrollLoading || !state.connected) return;
-
-  const { scrollTop, scrollHeight, clientHeight } = logsArea;
-  if (scrollHeight - scrollTop - clientHeight < 200 && state.cursor) {
+  const { scrollY } = window;
+  const { scrollHeight } = document.documentElement;
+  const { innerHeight } = window;
+  if (scrollHeight - scrollY - innerHeight < 200 && state.cursor) {
     searchLogs(true);
   }
-});
+}
+
+window.addEventListener('scroll', handleInfiniteScroll);
 
 // ─── Scroll navigation ─────────────────────────────────────────────────────
 
 const scrollBottomBtn = $('#scroll-bottom-btn');
 
-logsArea.addEventListener('scroll', updateScrollBtns);
-
 function updateScrollBtns() {
-  const { scrollTop, scrollHeight, clientHeight } = logsArea;
-  const scrolledDown = scrollTop > 300;
-  const nearBottom = scrollHeight - scrollTop - clientHeight < 200;
+  const { scrollY } = window;
+  const { scrollHeight } = document.documentElement;
+  const { innerHeight } = window;
+  const scrolledDown = scrollY > 300;
+  const nearBottom = scrollHeight - scrollY - innerHeight < 200;
   const hasEnoughContent = state.logCount >= 500;
 
   scrollTopBtn.style.opacity = scrolledDown ? '1' : '0';
@@ -536,10 +537,12 @@ function updateScrollBtns() {
   scrollBottomBtn.style.pointerEvents = showBottom ? 'auto' : 'none';
 }
 
+window.addEventListener('scroll', updateScrollBtns);
+
 scrollTopBtn.addEventListener('click', () => {
-  logsArea.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 scrollBottomBtn.addEventListener('click', () => {
-  logsArea.scrollTo({ top: logsArea.scrollHeight, behavior: 'smooth' });
+  window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
 });

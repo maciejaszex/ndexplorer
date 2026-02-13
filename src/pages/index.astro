@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-  <div class="h-screen flex flex-col overflow-hidden">
+  <div class="flex flex-col min-h-screen">
 
     <!-- Connect screen -->
     <div id="connect-screen" class="flex-1 flex items-center justify-center">
@@ -37,10 +37,10 @@ import Layout from '../layouts/Layout.astro';
     </div>
 
     <!-- Main panel (hidden until connected) -->
-    <div id="main-panel" class="flex-1 flex flex-col min-h-0" style="display: none;">
+    <div id="main-panel" class="flex flex-col" style="display: none;">
 
       <!-- Header -->
-      <header class="px-4 py-3 flex items-center justify-between" style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border);">
+      <header class="px-4 py-3 flex items-center justify-between mobile-header" style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border);">
         <div class="flex items-center gap-3">
           <h1 class="text-sm font-bold tracking-tight" style="color: var(--text-primary);">NDEXPLORER</h1>
           <a href="https://github.com/maciejaszex/ndexplorer" target="_blank" rel="noopener noreferrer" class="flex items-center opacity-50 hover:opacity-100 transition-opacity duration-150" title="GitHub">
@@ -50,7 +50,7 @@ import Layout from '../layouts/Layout.astro';
           </a>
           <span class="text-xs px-2 py-0.5 rounded" style="background-color: var(--bg-tertiary); color: var(--text-muted);" data-i18n="header.readonly">READ-ONLY</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 mobile-header-right">
           <div id="log-counter" class="text-xs" style="color: var(--text-muted); display: none;">
             <span data-i18n="header.displayed">Displayed:</span> <span id="log-count">0</span> <span data-i18n="header.logs">logs</span>
           </div>
@@ -66,7 +66,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="flex items-center gap-2 mb-2">
           <span class="text-xs font-medium" style="color: var(--text-muted);" data-i18n="filters.api">API Filters:</span>
         </div>
-        <form id="filter-form" class="flex flex-wrap items-end gap-3">
+        <form id="filter-form" class="flex flex-wrap items-end gap-3 mobile-filters">
 
           <div class="flex flex-col gap-1">
             <label for="filter-from" class="text-xs" style="color: var(--text-muted);" data-i18n="filters.from">From</label>
@@ -110,7 +110,7 @@ import Layout from '../layouts/Layout.astro';
             <span id="search-btn-spinner" class="spinner spinner-sm" style="border-color: rgba(255,255,255,0.3); border-top-color: white; display: none;"></span>
           </button>
 
-          <div class="mx-1 self-stretch" style="width: 1px; background-color: var(--border);"></div>
+          <div class="mx-1 self-stretch mobile-filter-separator" style="width: 1px; background-color: var(--border);"></div>
 
           <!-- Auto-refresh -->
           <div class="flex flex-col gap-1 relative">
@@ -135,16 +135,16 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       <!-- Local filters -->
-      <div class="px-4 py-2 flex items-center gap-5" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border);">
+      <div class="px-4 py-2 flex items-center gap-5 mobile-local-filters" style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border);">
         <span class="text-xs font-medium" style="color: var(--text-muted);" data-i18n="filters.local">Local Filters:</span>
 
-        <div class="flex items-center gap-1.5">
-          <label for="local-filter-domain" class="text-xs" style="color: var(--text-secondary);" data-i18n="filters.domain">Domain</label>
+        <div class="flex items-center gap-1.5 mobile-local-filter-item">
+          <label for="local-filter-domain" class="text-xs whitespace-nowrap" style="color: var(--text-secondary);" data-i18n="filters.domain">Domain</label>
           <input type="text" id="local-filter-domain" class="px-2 py-1 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.domainPlaceholder" placeholder="e.g. facebook" />
         </div>
 
-        <div class="flex items-center gap-1.5">
-          <label for="local-filter-tracker-search" class="text-xs" style="color: var(--text-secondary);" data-i18n="filters.tracker">Tracker</label>
+        <div class="flex items-center gap-1.5 mobile-local-filter-item">
+          <label for="local-filter-tracker-search" class="text-xs whitespace-nowrap" style="color: var(--text-secondary);" data-i18n="filters.tracker">Tracker</label>
           <input type="text" id="local-filter-tracker-search" class="px-2 py-1 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.trackerPlaceholder" placeholder="e.g. google" />
         </div>
 
@@ -158,34 +158,39 @@ import Layout from '../layouts/Layout.astro';
         </label>
       </div>
 
-      <!-- Log list headers -->
-      <div class="px-4 py-2 grid gap-2 text-xs font-medium" style="background-color: var(--bg-tertiary); color: var(--text-muted); grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 80px minmax(0, 1fr);">
-        <span data-i18n="logs.date">Date</span>
-        <span data-i18n="logs.domain">Domain</span>
-        <span data-i18n="logs.root">Root</span>
-        <span data-i18n="logs.tracker">Tracker</span>
-        <span data-i18n="logs.protocol">Protocol</span>
-        <span data-i18n="logs.status">Status</span>
-        <span data-i18n="logs.device">Device</span>
-      </div>
+      <!-- Log table (header + rows scroll together on mobile) -->
+      <div class="mobile-log-scroll">
+        <div class="mobile-log-inner">
+          <!-- Log list headers -->
+          <div class="px-4 py-2 grid gap-2 text-xs font-medium" style="background-color: var(--bg-tertiary); color: var(--text-muted); grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 80px minmax(0, 1fr);">
+            <span data-i18n="logs.date">Date</span>
+            <span data-i18n="logs.domain">Domain</span>
+            <span data-i18n="logs.root">Root</span>
+            <span data-i18n="logs.tracker">Tracker</span>
+            <span data-i18n="logs.protocol">Protocol</span>
+            <span data-i18n="logs.status">Status</span>
+            <span data-i18n="logs.device">Device</span>
+          </div>
 
-      <!-- Log list -->
-      <div id="logs-area" class="flex-1 overflow-y-auto min-h-0">
-        <div id="logs-empty" class="flex items-center justify-center py-20">
-          <p class="text-sm" style="color: var(--text-muted);" data-i18n="logs.empty">Set filters and click "Search"</p>
-        </div>
-        <div id="logs-loading" class="flex items-center justify-center py-20" style="display: none;">
-          <div class="spinner spinner-lg"></div>
-        </div>
-        <div id="logs-no-results" class="flex items-center justify-center py-20" style="display: none;">
-          <p class="text-sm" style="color: var(--text-muted);" data-i18n="logs.noResults">No logs for selected filters</p>
-        </div>
-        <div id="logs-list"></div>
-        <div id="logs-scroll-loader" class="flex items-center justify-center py-4" style="display: none;">
-          <div class="spinner"></div>
-        </div>
-        <div id="logs-end" class="flex items-center justify-center py-4" style="display: none;">
-          <p class="text-xs" style="color: var(--text-muted);" data-i18n="logs.allLoaded">All logs loaded</p>
+          <!-- Log list -->
+          <div id="logs-area">
+            <div id="logs-empty" class="flex items-center justify-center py-20">
+              <p class="text-sm" style="color: var(--text-muted);" data-i18n="logs.empty">Set filters and click "Search"</p>
+            </div>
+            <div id="logs-loading" class="flex items-center justify-center py-20" style="display: none;">
+              <div class="spinner spinner-lg"></div>
+            </div>
+            <div id="logs-no-results" class="flex items-center justify-center py-20" style="display: none;">
+              <p class="text-sm" style="color: var(--text-muted);" data-i18n="logs.noResults">No logs for selected filters</p>
+            </div>
+            <div id="logs-list"></div>
+            <div id="logs-scroll-loader" class="flex items-center justify-center py-4" style="display: none;">
+              <div class="spinner"></div>
+            </div>
+            <div id="logs-end" class="flex items-center justify-center py-4" style="display: none;">
+              <p class="text-xs" style="color: var(--text-muted);" data-i18n="logs.allLoaded">All logs loaded</p>
+            </div>
+          </div>
         </div>
       </div>
 

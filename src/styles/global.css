@@ -88,3 +88,80 @@ body {
   width: 28px;
   height: 28px;
 }
+
+/* ─── Mobile responsive ──────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Search button: bigger on mobile */
+  #search-btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Header: stack vertically */
+  .mobile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .mobile-header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* API filters: compact 2-column grid */
+  .mobile-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    align-items: end;
+  }
+  .mobile-filters > * {
+    min-width: 0;
+  }
+  .mobile-filters input[type="datetime-local"] {
+    width: 100%;
+    min-width: 0;
+    font-size: 0.625rem;
+    padding: 0.25rem 0.25rem;
+  }
+  .mobile-filters select {
+    width: 100%;
+    min-width: 0;
+  }
+  .mobile-filter-separator {
+    display: none;
+  }
+
+  /* Local filters: wrap */
+  .mobile-local-filters {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+  .mobile-local-filters input[type="text"] {
+    width: 100px !important;
+    min-width: 0;
+    flex: 1;
+  }
+  .mobile-local-filter-item {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Log table: horizontal scroll (header + rows together) */
+  .mobile-log-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-log-inner {
+    display: block;
+    min-width: 800px;
+  }
+
+  /* Scroll buttons: smaller on mobile */
+  #scroll-top-btn,
+  #scroll-bottom-btn {
+    width: 2rem;
+    height: 2rem;
+  }
+}
