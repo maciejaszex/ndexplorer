@@ -1,0 +1,14 @@
+---
+description: Testing conventions — Vitest + happy-dom
+globs: tests/**
+alwaysApply: false
+---
+
+# Testing
+
+- **Vitest 4.x** + **happy-dom** for DOM tests
+- Pragmatic — one `it()` covers a full scenario, not individual edge cases
+- Mock data in `tests/utils/mocks.ts` (17 fake logs, no real data)
+- Helpers in `tests/utils/` — test files contain only assertions
+- All UI text must be tested for both PL and EN key parity
+- Run: `npm test` (single), `npm run test:watch` (watch)

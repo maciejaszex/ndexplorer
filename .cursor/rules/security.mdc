@@ -1,0 +1,13 @@
+---
+description: Read-only security — only GET requests allowed
+alwaysApply: true
+---
+
+# Security — read-only
+
+- App is **strictly read-only**. It must NEVER modify anything in NextDNS.
+- The **only allowed HTTP method is GET**. No POST, PUT, PATCH or DELETE.
+- Only two NextDNS endpoints are used:
+  - `GET /profiles/:id/logs`
+  - `GET /profiles/:id/analytics/devices`
+- API token (`NEXTDNS_API_KEY`) must **never** reach the browser.

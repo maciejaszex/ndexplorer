@@ -1,0 +1,21 @@
+---
+description: Project tech stack and architecture
+alwaysApply: true
+---
+
+# Tech stack
+
+- **Astro 5.x** (SSR, `output: 'server'`), Node.js 24, port 4321
+- **Vanilla JS** only — zero client-side frameworks, no React/Vue/Svelte
+- **Tailwind CSS 4** — dark mode only, mobile breakpoint at 768px
+- **ESLint 9** + typescript-eslint + eslint-plugin-astro
+
+# Architecture
+
+```
+Browser → vanilla JS fetch → /api/* (Astro SSR proxy) → NextDNS API
+```
+
+- API token stays server-side only (`.env`), never sent to browser
+- Two proxy endpoints: `GET /api/devices`, `GET /api/logs`
+- Whole page scrolls naturally (no internal scroll containers)

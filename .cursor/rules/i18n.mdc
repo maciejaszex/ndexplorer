@@ -1,0 +1,13 @@
+---
+description: Bilingual UI — Polish and English
+globs: "{src/pages/**,src/scripts/**,src/i18n/**}"
+alwaysApply: false
+---
+
+# i18n
+
+- Two languages: **PL** (default) and **EN**
+- Translations in `src/i18n/translations.js` — `t(key)` returns current language string
+- HTML attributes: `data-i18n` (textContent), `data-i18n-placeholder`, `data-i18n-aria`
+- Language stored in `localStorage` key `ndexplorer-lang`
+- When adding new UI text, always add both PL and EN keys
