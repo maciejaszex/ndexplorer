@@ -1,14 +1,16 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
   {
+    plugins: { '@stylistic': stylistic },
     rules: {
-      'max-len': ['warn', { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true }],
+      '@stylistic/max-len': ['warn', { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true }],
     },
   },
   {
