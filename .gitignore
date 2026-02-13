@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Internal documentation
+REQUIREMENTS.md
+SPEC.md
+
+# GitHub assets (uploaded via Settings, not part of the app)
+assets/social-preview.jpg

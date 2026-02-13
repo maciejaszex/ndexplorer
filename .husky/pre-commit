@@ -1,0 +1,12 @@
+npm run lint &
+pid1=$!
+npm test &
+pid2=$!
+npm run secrets &
+pid3=$!
+
+fail=0
+wait $pid1 || fail=1
+wait $pid2 || fail=1
+wait $pid3 || fail=1
+exit $fail
