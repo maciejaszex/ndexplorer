@@ -515,6 +515,8 @@ function updateToggleVisual() {
     trackerToggleDot.style.transform = 'translateX(0)';
     trackerToggleDot.style.backgroundColor = 'var(--text-muted)';
   }
+  localFilterTrackerSearch.disabled = !checked;
+  localFilterTrackerSearch.style.opacity = checked ? '1' : '0.4';
 }
 
 updateToggleVisual();
