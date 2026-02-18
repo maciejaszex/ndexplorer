@@ -154,14 +154,17 @@ function setDateRange(range) {
   let from;
 
   switch (range) {
+    case '15m':
+      from = new Date(now.getTime() - 15 * 60 * 1000);
+      break;
     case '1h':
       from = new Date(now.getTime() - 1 * 60 * 60 * 1000);
       break;
     case '24h':
       from = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       break;
-    case '3d':
-      from = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    case '72h':
+      from = new Date(now.getTime() - 72 * 60 * 60 * 1000);
       break;
     default:
       from = new Date(now.getTime() - 1 * 60 * 60 * 1000);
@@ -356,7 +359,7 @@ async function searchLogs(isScroll) {
 const AR_LABELS = { 30: '30s', 60: '1m', 300: '5m' };
 
 function updateAutoRefreshAvailability() {
-  const enabled = state.activePreset === '1h';
+  const enabled = state.activePreset === '15m' || state.activePreset === '1h';
   autoRefreshBtns.forEach((btn) => { btn.disabled = !enabled; });
   hide(arPresetHint);
 }
@@ -389,7 +392,7 @@ function startAutoRefresh(seconds) {
     updateAutoRefreshButtons();
 
     if (state.autoRefreshRemaining <= 0) {
-      setDateRange('1h');
+      setDateRange(state.activePreset);
       searchLogs(false);
       state.autoRefreshRemaining = state.autoRefreshSeconds;
     }
@@ -477,6 +480,19 @@ function renderLogs(logs) {
 }
 
 // ─── Local filters ──────────────────────────────────────────────────────────
+
+// ─── Input clear buttons ─────────────────────────────────────────────────
+
+document.querySelectorAll('.input-clear-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.clear);
+    if (input) {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    }
+  });
+});
 
 localFilterTracker.addEventListener('change', () => {
   updateToggleVisual();

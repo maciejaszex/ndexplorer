@@ -22,8 +22,7 @@ Thumbs.db
 *~
 
 # Internal documentation
-REQUIREMENTS.md
-SPEC.md
+docs/
 
 # GitHub assets (uploaded via Settings, not part of the app)
 assets/social-preview.jpg

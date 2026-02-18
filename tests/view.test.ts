@@ -29,7 +29,7 @@ describe('Log screen — desktop', () => {
     for (const id of ['filter-from', 'filter-to', 'filter-status', 'filter-device', 'search-btn']) {
       expect(document.getElementById(id)).not.toBeNull();
     }
-    expect(document.querySelectorAll('.date-range-btn')).toHaveLength(3);
+    expect(document.querySelectorAll('.date-range-btn')).toHaveLength(4);
     expect(document.querySelectorAll('.auto-refresh-btn')).toHaveLength(3);
 
     // Local filters
@@ -54,6 +54,36 @@ describe('Log screen — desktop', () => {
     const root = document.querySelector('.min-h-screen') as HTMLElement;
     expect(root.classList.contains('overflow-hidden')).toBe(false);
     expect(document.getElementById('logs-area')!.classList.contains('overflow-y-auto')).toBe(false);
+  });
+});
+
+describe('Input clear buttons', () => {
+  it('clear button empties the input and triggers input event', () => {
+    // Register clear handlers (same logic as app.js)
+    document.querySelectorAll('.input-clear-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById((btn as HTMLElement).dataset.clear!) as HTMLInputElement;
+        if (input) {
+          input.value = '';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    });
+
+    for (const id of ['local-filter-domain', 'local-filter-tracker-search']) {
+      const input = document.getElementById(id) as HTMLInputElement;
+      const clearBtn = document.querySelector(`[data-clear="${id}"]`) as HTMLButtonElement;
+      expect(clearBtn).not.toBeNull();
+
+      input.value = 'test-value';
+      let inputFired = false;
+      input.addEventListener('input', () => { inputFired = true; }, { once: true });
+
+      clearBtn.click();
+
+      expect(input.value).toBe('');
+      expect(inputFired).toBe(true);
+    }
   });
 });
 

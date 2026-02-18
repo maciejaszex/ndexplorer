@@ -81,9 +81,10 @@ import Layout from '../layouts/Layout.astro';
           <div class="flex flex-col gap-1">
             <span class="text-xs" style="color: var(--text-muted);" data-i18n="filters.range">Range</span>
             <div class="flex gap-1">
+              <button type="button" data-range="15m" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.15m">15m</button>
               <button type="button" data-range="1h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.1h">1h</button>
               <button type="button" data-range="24h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.24h">24h</button>
-              <button type="button" data-range="3d" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.3d">3 days</button>
+              <button type="button" data-range="72h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.72h">72h</button>
             </div>
           </div>
 
@@ -128,7 +129,7 @@ import Layout from '../layouts/Layout.astro';
               </button>
             </div>
             <div id="ar-preset-hint" class="absolute left-0 -top-7 px-2 py-1 rounded text-xs whitespace-nowrap" style="background-color: var(--bg-tertiary); color: var(--status-error); border: 1px solid var(--border); display: none;" data-i18n="autorefresh.hint">
-              Auto-refresh requires the "1h" date preset
+              Auto-refresh requires the "15m" or "1h" preset
             </div>
           </div>
         </form>
@@ -140,12 +141,18 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="flex items-center gap-1.5 mobile-local-filter-item">
           <label for="local-filter-domain" class="text-xs whitespace-nowrap" style="color: var(--text-secondary);" data-i18n="filters.domain">Domain</label>
-          <input type="text" id="local-filter-domain" class="px-2 py-1 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.domainPlaceholder" placeholder="e.g. facebook" />
+          <div class="relative">
+            <input type="text" id="local-filter-domain" class="px-2 py-1 pr-6 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.domainPlaceholder" placeholder="e.g. facebook" />
+            <button type="button" class="input-clear-btn" data-clear="local-filter-domain" aria-label="Clear">&times;</button>
+          </div>
         </div>
 
         <div class="flex items-center gap-1.5 mobile-local-filter-item">
           <label for="local-filter-tracker-search" class="text-xs whitespace-nowrap" style="color: var(--text-secondary);" data-i18n="filters.tracker">Tracker</label>
-          <input type="text" id="local-filter-tracker-search" class="px-2 py-1 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.trackerPlaceholder" placeholder="e.g. google" />
+          <div class="relative">
+            <input type="text" id="local-filter-tracker-search" class="px-2 py-1 pr-6 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.trackerPlaceholder" placeholder="e.g. google" />
+            <button type="button" class="input-clear-btn" data-clear="local-filter-tracker-search" aria-label="Clear">&times;</button>
+          </div>
         </div>
 
         <label class="flex items-center gap-2.5 cursor-pointer select-none">

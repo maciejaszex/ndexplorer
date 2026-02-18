@@ -14,12 +14,12 @@ describe('Main panel — header', () => {
 });
 
 describe('Main panel — API filters', () => {
-  it('has datetime-local date inputs and preset buttons (1h, 24h, 3d)', () => {
+  it('has datetime-local date inputs and preset buttons (15m, 1h, 24h, 72h)', () => {
     expect(html).toContain('id="filter-from"');
     expect(html).toContain('id="filter-to"');
     expect(html).toMatch(/type="datetime-local"[^>]*id="filter-from"/);
     expect(html).toMatch(/type="datetime-local"[^>]*id="filter-to"/);
-    for (const r of ['1h', '24h', '3d']) {
+    for (const r of ['15m', '1h', '24h', '72h']) {
       expect(html).toContain(`data-range="${r}"`);
     }
   });

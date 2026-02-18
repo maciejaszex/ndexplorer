@@ -31,9 +31,10 @@
       'filters.from': 'Od',
       'filters.to': 'Do',
       'filters.range': 'Zakres',
+      'filters.range.15m': '15m',
       'filters.range.1h': '1h',
       'filters.range.24h': '24h',
-      'filters.range.3d': '3 dni',
+      'filters.range.72h': '72h',
       'filters.status': 'Status',
       'filters.all': 'Wszystkie',
       'filters.device': 'Urządzenie',
@@ -42,7 +43,7 @@
 
       // Auto-refresh
       'autorefresh.label': 'Auto-refresh',
-      'autorefresh.hint': 'Auto-refresh wymaga zakresu dat z presetu „1h"',
+      'autorefresh.hint': 'Auto-refresh wymaga presetu „15m" lub „1h"',
 
       // Local filters
       'filters.local': 'Filtry lokalne:',
@@ -105,9 +106,10 @@
       'filters.from': 'From',
       'filters.to': 'To',
       'filters.range': 'Range',
+      'filters.range.15m': '15m',
       'filters.range.1h': '1h',
       'filters.range.24h': '24h',
-      'filters.range.3d': '3 days',
+      'filters.range.72h': '72h',
       'filters.status': 'Status',
       'filters.all': 'All',
       'filters.device': 'Device',
@@ -116,7 +118,7 @@
 
       // Auto-refresh
       'autorefresh.label': 'Auto-refresh',
-      'autorefresh.hint': 'Auto-refresh requires the "1h" date preset',
+      'autorefresh.hint': 'Auto-refresh requires the "15m" or "1h" preset',
 
       // Local filters
       'filters.local': 'Local Filters:',
