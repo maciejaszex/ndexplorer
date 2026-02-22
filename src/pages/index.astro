@@ -81,10 +81,10 @@ import Layout from '../layouts/Layout.astro';
           <div class="flex flex-col gap-1">
             <span class="text-xs" style="color: var(--text-muted);" data-i18n="filters.range">Range</span>
             <div class="flex gap-1">
-              <button type="button" data-range="15m" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.15m">15m</button>
-              <button type="button" data-range="1h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.1h">1h</button>
-              <button type="button" data-range="24h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.24h">24h</button>
-              <button type="button" data-range="72h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="filters.range.72h">72h</button>
+              <button type="button" data-range="15m" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.15m">15m</button>
+              <button type="button" data-range="1h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.1h">1h</button>
+              <button type="button" data-range="24h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.24h">24h</button>
+              <button type="button" data-range="72h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.72h">72h</button>
             </div>
           </div>
 
@@ -118,13 +118,13 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-xs" style="color: var(--text-muted);" data-i18n="autorefresh.label">Auto-refresh</span>
 
             <div class="flex gap-1 items-center">
-              <button type="button" data-refresh="30" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" disabled>
+              <button type="button" data-refresh="30" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                 <span class="ar-label">30s</span>
               </button>
-              <button type="button" data-refresh="60" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" disabled>
+              <button type="button" data-refresh="60" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                 <span class="ar-label">1m</span>
               </button>
-              <button type="button" data-refresh="300" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" disabled>
+              <button type="button" data-refresh="300" class="auto-refresh-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150 font-mono disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                 <span class="ar-label">5m</span>
               </button>
             </div>
@@ -151,8 +151,8 @@ import Layout from '../layouts/Layout.astro';
           <span class="text-xs" style="color: var(--text-secondary);" data-i18n="filters.showTrackers">Show trackers</span>
           <div class="relative inline-flex items-center">
             <input type="checkbox" id="local-filter-tracker" class="sr-only peer" checked />
-            <div class="w-10 h-5 rounded-full transition-colors duration-200" style="background-color: var(--bg-tertiary); border: 1px solid var(--border);"></div>
-            <div class="absolute left-0.5 w-4 h-4 rounded-full transition-transform duration-200" style="background-color: var(--text-muted);" id="tracker-toggle-dot"></div>
+            <div class="tracker-track w-10 h-5 rounded-full transition-colors duration-200"></div>
+            <div class="absolute left-0.5 w-4 h-4 rounded-full transition-transform duration-200" id="tracker-toggle-dot"></div>
           </div>
         </label>
 

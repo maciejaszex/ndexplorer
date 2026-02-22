@@ -47,7 +47,7 @@ export function formatDomainWithRoot(domain: string, root?: string) {
   const idx = escaped.lastIndexOf(escapedRoot);
   if (idx === -1) return escaped;
   const prefix = escaped.substring(0, idx);
-  return `${prefix}<strong style="color: var(--text-primary); font-weight: 600;">${escapedRoot}</strong>`;
+  return `${prefix}<strong class="domain-root">${escapedRoot}</strong>`;
 }
 
 export function renderLogs(logs: MockLog[], container: HTMLElement) {

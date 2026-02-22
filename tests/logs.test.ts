@@ -32,7 +32,7 @@ describe('Log rendering', () => {
     expect(html).toContain('var(--status-default)');
 
     expect(html).toContain(
-      '<strong style="color: var(--text-primary); font-weight: 600;">fake-analytics.xyz</strong>',
+      '<strong class="domain-root">fake-analytics.xyz</strong>',
     );
   });
 

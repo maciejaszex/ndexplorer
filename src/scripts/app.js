@@ -18,6 +18,9 @@ const state = {
   autoRefreshRemaining: 0,
 };
 
+let searchController = null;
+const logsData = [];
+
 // ─── DOM refs ───────────────────────────────────────────────────────────────
 
 const $ = (sel) => document.querySelector(sel);
@@ -49,7 +52,6 @@ const autoRefreshBtns = document.querySelectorAll('.auto-refresh-btn');
 const arPresetHint = $('#ar-preset-hint');
 const localFilterDomain = $('#local-filter-domain');
 const localFilterTrackerSearch = $('#local-filter-tracker-search');
-const trackerToggleDot = $('#tracker-toggle-dot');
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -72,6 +74,14 @@ function throttle(fn, ms) {
         fn.apply(this, args);
       }, remaining);
     }
+  };
+}
+
+function debounce(fn, ms) {
+  let timer = null;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
   };
 }
 
@@ -113,7 +123,7 @@ function formatDomainWithRoot(domain, root) {
   if (idx === -1) return escapedDomain;
 
   const prefix = escapedDomain.substring(0, idx);
-  return `${prefix}<strong style="color: var(--text-primary); font-weight: 600;">${escapedRoot}</strong>`;
+  return `${prefix}<strong class="domain-root">${escapedRoot}</strong>`;
 }
 
 function escapeHtml(str) {
@@ -126,8 +136,7 @@ function escapeHtml(str) {
 
 function showToast(message) {
   const toast = document.createElement('div');
-  toast.className = 'toast-enter pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-lg text-sm max-w-sm shadow-lg';
-  toast.style.cssText = `background-color: var(--toast-error); color: white;`;
+  toast.className = 'toast-enter toast-msg pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-lg text-sm max-w-sm shadow-lg';
   toast.innerHTML = `
     <span class="flex-1">${escapeHtml(message)}</span>
     <button class="ml-2 opacity-70 hover:opacity-100 transition-opacity cursor-pointer text-base leading-none" aria-label="${t('toast.close')}">&times;</button>
@@ -175,15 +184,7 @@ function setDateRange(range) {
   state.activePreset = range;
 
   dateRangeBtns.forEach((btn) => {
-    if (btn.dataset.range === range) {
-      btn.style.backgroundColor = 'var(--accent)';
-      btn.style.color = 'white';
-      btn.style.borderColor = 'var(--accent)';
-    } else {
-      btn.style.backgroundColor = 'var(--bg-tertiary)';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.borderColor = 'var(--border)';
-    }
+    btn.setAttribute('aria-pressed', btn.dataset.range === range);
   });
 
   updateAutoRefreshAvailability();
@@ -197,9 +198,7 @@ dateRangeBtns.forEach((btn) => {
 function clearDateRangeButtons() {
   state.activePreset = null;
   dateRangeBtns.forEach((btn) => {
-    btn.style.backgroundColor = 'var(--bg-tertiary)';
-    btn.style.color = 'var(--text-secondary)';
-    btn.style.borderColor = 'var(--border)';
+    btn.setAttribute('aria-pressed', 'false');
   });
   stopAutoRefresh();
   updateAutoRefreshAvailability();
@@ -268,9 +267,12 @@ filterForm.addEventListener('submit', (e) => {
 
 async function searchLogs(isScroll) {
   if (!isScroll) {
+    if (searchController) searchController.abort();
     state.cursor = null;
     state.logCount = 0;
     state.allLoaded = false;
+    state.scrollLoading = false;
+    logsData.length = 0;
     logsList.innerHTML = '';
     hide(logsEnd);
     hide(logsNoResults);
@@ -287,6 +289,9 @@ async function searchLogs(isScroll) {
     state.scrollLoading = true;
     show(logsScrollLoader);
   }
+
+  const controller = new AbortController();
+  searchController = controller;
 
   try {
     const params = new URLSearchParams();
@@ -305,7 +310,7 @@ async function searchLogs(isScroll) {
     if (filterDevice.value) params.set('device', filterDevice.value);
     if (isScroll && state.cursor) params.set('cursor', state.cursor);
 
-    const res = await fetch(`/api/logs?${params.toString()}`);
+    const res = await fetch(`/api/logs?${params.toString()}`, { signal: controller.signal });
     const data = await res.json();
 
     if (data.error || data.errorKey) {
@@ -336,20 +341,23 @@ async function searchLogs(isScroll) {
     }
 
   } catch (err) {
+    if (err.name === 'AbortError') return;
     showToast(err.message || t('logs.fetchError'));
     if (!isScroll) {
       hide(logsLoading);
       show(logsEmpty);
     }
   } finally {
-    if (!isScroll) {
-      searchBtn.disabled = false;
-      searchBtnText.dataset.i18n = 'filters.search';
-      searchBtnText.textContent = t('filters.search');
-      hide(searchBtnSpinner);
-    } else {
-      state.scrollLoading = false;
-      hide(logsScrollLoader);
+    if (searchController === controller) {
+      if (!isScroll) {
+        searchBtn.disabled = false;
+        searchBtnText.dataset.i18n = 'filters.search';
+        searchBtnText.textContent = t('filters.search');
+        hide(searchBtnSpinner);
+      } else {
+        state.scrollLoading = false;
+        hide(logsScrollLoader);
+      }
     }
   }
 }
@@ -415,17 +423,10 @@ function updateAutoRefreshButtons() {
     const label = btn.querySelector('.ar-label');
     const isActive = state.autoRefreshSeconds === seconds;
 
-    if (isActive) {
-      btn.style.backgroundColor = '#22c55e';
-      btn.style.color = 'white';
-      btn.style.borderColor = '#16a34a';
-      label.textContent = formatCountdown(state.autoRefreshRemaining);
-    } else {
-      btn.style.backgroundColor = 'var(--bg-tertiary)';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.borderColor = 'var(--border)';
-      label.textContent = AR_LABELS[seconds] || `${seconds}s`;
-    }
+    btn.setAttribute('aria-pressed', isActive);
+    label.textContent = isActive
+      ? formatCountdown(state.autoRefreshRemaining)
+      : (AR_LABELS[seconds] || `${seconds}s`);
   });
 }
 
@@ -455,7 +456,6 @@ function renderLogs(logs) {
     row.dataset.hasTracker = hasTracker ? 'true' : 'false';
     row.dataset.domain = log.domain || '';
     row.dataset.tracker = log.tracker || '';
-    row.style.cssText = `grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 80px minmax(0, 1fr); border-bottom: 1px solid var(--border);`;
 
     const deviceName = log.device?.name || log.device?.model || '—';
     const root = log.root || '—';
@@ -473,6 +473,12 @@ function renderLogs(logs) {
       <span class="truncate" style="color: var(--text-secondary);" title="${escapeHtml(deviceName)}">${escapeHtml(deviceName)}</span>
     `;
 
+    logsData.push({
+      domain: (log.domain || '').toLowerCase(),
+      tracker: (log.tracker || '').toLowerCase(),
+      hasTracker,
+      el: row,
+    });
     fragment.appendChild(row);
   });
 
@@ -494,52 +500,32 @@ document.querySelectorAll('.input-clear-btn').forEach((btn) => {
   });
 });
 
+const debouncedApplyLocalFilters = debounce(applyLocalFilters, 150);
+
 localFilterTracker.addEventListener('change', () => {
-  updateToggleVisual();
+  localFilterTrackerSearch.disabled = !localFilterTracker.checked;
   applyLocalFilters();
 });
-localFilterDomain.addEventListener('input', applyLocalFilters);
-localFilterTrackerSearch.addEventListener('input', applyLocalFilters);
+localFilterDomain.addEventListener('input', debouncedApplyLocalFilters);
+localFilterTrackerSearch.addEventListener('input', debouncedApplyLocalFilters);
 
-function updateToggleVisual() {
-  const checked = localFilterTracker.checked;
-  const track = trackerToggleDot.previousElementSibling;
-  if (checked) {
-    track.style.backgroundColor = 'var(--toggle-on)';
-    track.style.borderColor = 'var(--toggle-on-border)';
-    trackerToggleDot.style.transform = 'translateX(20px)';
-    trackerToggleDot.style.backgroundColor = 'white';
-  } else {
-    track.style.backgroundColor = 'var(--bg-tertiary)';
-    track.style.borderColor = 'var(--border)';
-    trackerToggleDot.style.transform = 'translateX(0)';
-    trackerToggleDot.style.backgroundColor = 'var(--text-muted)';
-  }
-  localFilterTrackerSearch.disabled = !checked;
-  localFilterTrackerSearch.style.opacity = checked ? '1' : '0.4';
-}
-
-updateToggleVisual();
+localFilterTrackerSearch.disabled = !localFilterTracker.checked;
 
 function applyLocalFilters() {
   const hideTrackers = !localFilterTracker.checked;
   const domainQuery = localFilterDomain.value.trim().toLowerCase();
   const trackerQuery = localFilterTrackerSearch.value.trim().toLowerCase();
-  const rows = logsList.querySelectorAll('.log-row');
   let visibleCount = 0;
   const anyFilterActive = hideTrackers || domainQuery || trackerQuery;
 
-  rows.forEach((row) => {
-    const hasTracker = row.dataset.hasTracker === 'true';
-    const domain = (row.dataset.domain || '').toLowerCase();
-    const tracker = (row.dataset.tracker || '').toLowerCase();
+  logsData.forEach((entry) => {
     let visible = true;
 
-    if (hideTrackers && hasTracker) visible = false;
-    if (visible && domainQuery && !domain.includes(domainQuery)) visible = false;
-    if (visible && trackerQuery && !tracker.includes(trackerQuery)) visible = false;
+    if (hideTrackers && entry.hasTracker) visible = false;
+    if (visible && domainQuery && !entry.domain.includes(domainQuery)) visible = false;
+    if (visible && trackerQuery && !entry.tracker.includes(trackerQuery)) visible = false;
 
-    row.style.display = visible ? '' : 'none';
+    entry.el.style.display = visible ? '' : 'none';
     if (visible) visibleCount++;
   });
 
@@ -572,16 +558,10 @@ function updateScrollBtns() {
   const nearBottom = scrollHeight - scrollY - innerHeight < 200;
   const hasEnoughContent = state.logCount >= 500;
 
-  if (scrollTopBtn) {
-    scrollTopBtn.style.opacity = scrolledDown ? '1' : '0';
-    scrollTopBtn.style.pointerEvents = scrolledDown ? 'auto' : 'none';
-  }
+  if (scrollTopBtn) scrollTopBtn.classList.toggle('visible', scrolledDown);
 
   const showBottom = hasEnoughContent && !nearBottom;
-  if (scrollBottomBtn) {
-    scrollBottomBtn.style.opacity = showBottom ? '1' : '0';
-    scrollBottomBtn.style.pointerEvents = showBottom ? 'auto' : 'none';
-  }
+  if (scrollBottomBtn) scrollBottomBtn.classList.toggle('visible', showBottom);
 }
 
 const onScroll = throttle(() => {

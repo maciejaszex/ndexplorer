@@ -120,6 +120,80 @@ body {
   pointer-events: auto;
 }
 
+/* Button states */
+.date-range-btn {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.date-range-btn[aria-pressed="true"] {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.auto-refresh-btn {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.auto-refresh-btn[aria-pressed="true"] {
+  background-color: var(--toggle-on);
+  color: white;
+  border-color: var(--toggle-on-border);
+}
+
+/* Tracker toggle */
+.tracker-track {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+}
+#local-filter-tracker:checked ~ .tracker-track {
+  background-color: var(--toggle-on);
+  border-color: var(--toggle-on-border);
+}
+#tracker-toggle-dot {
+  background-color: var(--text-muted);
+  transform: translateX(0);
+}
+#local-filter-tracker:checked ~ #tracker-toggle-dot {
+  transform: translateX(20px);
+  background-color: white;
+}
+#local-filter-tracker-search:disabled {
+  opacity: 0.4;
+}
+
+/* Log row grid */
+.log-row {
+  grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 80px minmax(0, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Scroll nav buttons */
+.scroll-nav-btn {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  opacity: 0;
+  pointer-events: none;
+}
+.scroll-nav-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Toast */
+.toast-msg {
+  background-color: var(--toast-error);
+  color: white;
+}
+
+/* Root domain highlight */
+.domain-root {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* ─── Mobile responsive ──────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {

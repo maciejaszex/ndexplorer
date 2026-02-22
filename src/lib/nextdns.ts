@@ -57,6 +57,7 @@ export async function fetchDevices(): Promise<DevicesResponse> {
   const res = await fetch(url, {
     method: 'GET',
     headers: getHeaders(apiKey),
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!res.ok) {
@@ -123,6 +124,7 @@ export async function fetchLogs(params: LogsParams): Promise<LogsResponse> {
   const res = await fetch(url.toString(), {
     method: 'GET',
     headers: getHeaders(apiKey),
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!res.ok) {
