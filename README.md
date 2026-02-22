@@ -104,7 +104,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 
 ## Tests
 
-25 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
+26 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
 
