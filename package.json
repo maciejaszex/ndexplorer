@@ -17,22 +17,22 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "9.5.3",
-    "astro": "5.17.2"
+    "@astrojs/node": "9.5.4",
+    "astro": "5.17.3"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.2",
+    "@eslint/js": "9.39.3",
     "@secretlint/secretlint-rule-pattern": "11.3.1",
     "@secretlint/secretlint-rule-preset-recommend": "11.3.1",
-    "@stylistic/eslint-plugin": "5.8.0",
-    "@tailwindcss/vite": "4.1.18",
-    "eslint": "9.39.2",
-    "eslint-plugin-astro": "1.5.0",
-    "happy-dom": "20.6.1",
+    "@stylistic/eslint-plugin": "5.9.0",
+    "@tailwindcss/vite": "4.2.0",
+    "eslint": "9.39.3",
+    "eslint-plugin-astro": "1.6.0",
+    "happy-dom": "20.7.0",
     "husky": "9.1.7",
     "secretlint": "11.3.1",
-    "tailwindcss": "4.1.18",
-    "typescript-eslint": "8.55.0",
+    "tailwindcss": "4.2.0",
+    "typescript-eslint": "8.56.0",
     "vitest": "4.0.18"
   }
 }
