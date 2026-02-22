@@ -16,9 +16,9 @@ export class AppError extends Error {
 }
 
 function getConfig() {
-  const apiKey = import.meta.env.NEXTDNS_API_KEY;
-  const profileId = import.meta.env.NEXTDNS_PROFILE_ID;
-  const logsLimit = import.meta.env.NEXTDNS_LOGS_LIMIT || '200';
+  const apiKey = process.env.NEXTDNS_API_KEY || import.meta.env.NEXTDNS_API_KEY;
+  const profileId = process.env.NEXTDNS_PROFILE_ID || import.meta.env.NEXTDNS_PROFILE_ID;
+  const logsLimit = process.env.NEXTDNS_LOGS_LIMIT || import.meta.env.NEXTDNS_LOGS_LIMIT || '200';
 
   if (!apiKey || !profileId) {
     throw new AppError('error.configMissing');

@@ -1,0 +1,47 @@
+# Dependencies & build output
+node_modules/
+dist/
+.astro/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+
+# Git & GitHub
+.git/
+.github/
+.husky/
+
+# Not needed in image
+docs/
+tests/
+assets/
+
+# Config files not needed for build
+eslint.config.js
+.secretlintrc.json
+.secretlintignore
+.nvmrc
+
+# Docker & docs
+Dockerfile
+.dockerignore
+.gitignore
+README.md
+CONTRIBUTING.md
+SECURITY.md
+LICENSE

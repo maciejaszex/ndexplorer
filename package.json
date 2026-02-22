@@ -14,6 +14,9 @@
     "test:watch": "vitest --reporter=verbose",
     "secrets": "secretlint \"**/*\"",
     "kill": "lsof -ti:4321 | xargs kill -9 2>/dev/null; echo 'Port 4321 killed...'",
+    "docker:build": "docker build -t ndexplorer .",
+    "docker:run": "test -f .env && docker run --rm --env-file .env -p 4321:4321 ndexplorer",
+    "docker:clean": "docker rmi -f ndexplorer",
     "prepare": "husky"
   },
   "dependencies": {

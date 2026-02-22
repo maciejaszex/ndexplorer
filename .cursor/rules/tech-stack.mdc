@@ -19,3 +19,4 @@ Browser → vanilla JS fetch → /api/* (Astro SSR proxy) → NextDNS API
 - API token stays server-side only (`.env`), never sent to browser
 - Two proxy endpoints: `GET /api/devices`, `GET /api/logs`
 - Whole page scrolls naturally (no internal scroll containers)
+- Docker: multi-stage build (`Dockerfile`), env via `--env-file .env`, port 4321
