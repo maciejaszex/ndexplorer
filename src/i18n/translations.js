@@ -25,6 +25,8 @@
       'header.readonly': 'READ-ONLY',
       'header.displayed': 'Wyświetlono:',
       'header.logs': 'logów',
+      'theme.label': 'Motyw',
+      'theme.toggle': 'Przełącz motyw',
 
       // API Filters
       'filters.api': 'Filtry API:',
@@ -100,6 +102,8 @@
       'header.readonly': 'READ-ONLY',
       'header.displayed': 'Displayed:',
       'header.logs': 'logs',
+      'theme.label': 'Theme',
+      'theme.toggle': 'Toggle theme',
 
       // API Filters
       'filters.api': 'API Filters:',

@@ -20,6 +20,8 @@ const state = {
 
 let searchController = null;
 const logsData = [];
+const THEME_STORAGE_KEY = 'ndexplorer-theme';
+const DEFAULT_THEME = 'dark';
 
 // ─── DOM refs ───────────────────────────────────────────────────────────────
 
@@ -52,6 +54,7 @@ const autoRefreshBtns = document.querySelectorAll('.auto-refresh-btn');
 const arPresetHint = $('#ar-preset-hint');
 const localFilterDomain = $('#local-filter-domain');
 const localFilterTrackerSearch = $('#local-filter-tracker-search');
+const themeToggle = $('#theme-toggle');
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -131,6 +134,52 @@ function escapeHtml(str) {
   div.textContent = str;
   return div.innerHTML;
 }
+
+// ─── Theme ──────────────────────────────────────────────────────────────────
+
+function getStoredTheme() {
+  let stored = null;
+  try {
+    stored = localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {
+    stored = null;
+  }
+  return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME;
+}
+
+function setTheme(theme) {
+  const resolvedTheme = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, resolvedTheme);
+  } catch {
+    // Ignore storage errors (e.g. private mode restrictions)
+  }
+
+  if (themeToggle) {
+    // checked = dark (default), unchecked = light
+    themeToggle.checked = resolvedTheme === 'dark';
+  }
+}
+
+function initTheme() {
+  setTheme(getStoredTheme());
+
+  if (themeToggle) {
+    themeToggle.addEventListener('change', () => {
+      setTheme(themeToggle.checked ? 'dark' : 'light');
+    });
+  }
+
+  const themeWrap = $('#theme-toggle-wrap');
+  const themeHint = $('#theme-hint');
+  if (themeWrap && themeHint) {
+    themeWrap.addEventListener('mouseenter', () => show(themeHint));
+    themeWrap.addEventListener('mouseleave', () => hide(themeHint));
+  }
+}
+
+initTheme();
 
 // ─── Toast ──────────────────────────────────────────────────────────────────
 

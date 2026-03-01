@@ -19,6 +19,25 @@
   --toast-error: #dc2626;
 }
 
+:root[data-theme="light"] {
+  --bg-primary: #f3f5fb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e9ecf7;
+  --text-primary: #141826;
+  --text-secondary: #3c4358;
+  --text-muted: #6a718a;
+  --accent: #4f46e5;
+  --accent-hover: #6366f1;
+  --status-blocked: #dc2626;
+  --status-allowed: #16a34a;
+  --status-default: #6b7280;
+  --status-error: #d97706;
+  --border: #cfd5e6;
+  --toggle-on: #22c55e;
+  --toggle-on-border: #16a34a;
+  --toast-error: #dc2626;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -30,6 +49,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .font-mono {
@@ -192,6 +212,24 @@ body {
 .domain-root {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+/* Theme switch (mirrors tracker toggle) */
+.theme-switch-track {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+}
+.theme-switch-dot {
+  background-color: var(--text-muted);
+  transform: translateX(0);
+}
+#theme-toggle:checked ~ .theme-switch-track {
+  background-color: var(--toggle-on);
+  border-color: var(--toggle-on-border);
+}
+#theme-toggle:checked ~ #theme-toggle-dot {
+  transform: translateX(20px);
+  background-color: white;
 }
 
 /* ─── Mobile responsive ──────────────────────────────────────────────────── */

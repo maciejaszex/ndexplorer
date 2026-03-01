@@ -11,6 +11,14 @@ describe('Main panel — header', () => {
     expect(html).toContain('id="log-counter"');
     expect(html).toContain('id="log-count"');
   });
+
+  it('has theme switch in header, defaulting to dark mode', () => {
+    expect(html).toContain('id="theme-toggle"');
+    expect(html).toContain('id="theme-hint"');
+    expect(html).toContain('data-i18n="theme.label"');
+    expect(html).toContain('data-i18n-aria="theme.toggle"');
+    expect(html).toMatch(/id="theme-toggle"[\s\S]*checked/);
+  });
 });
 
 describe('Main panel — API filters', () => {

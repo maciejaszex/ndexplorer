@@ -30,6 +30,7 @@ The NextDNS dashboard doesn't offer flexible log filtering. NDExplorer gives you
 - Auto-refresh (30s / 1m / 5m)
 - Device-based log browsing
 - Date range presets (15m, 1h, 24h, 72h)
+- Theme switcher (Dark / Light, default: Dark)
 
 All read-only — nothing is modified in your NextDNS settings.
 
@@ -94,7 +95,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 | | |
 |---|---|
 | Framework | [Astro](https://astro.build/) 5.x (SSR) |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) 4.x (dark mode) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) 4.x (dark/light themes) |
 | Client logic | Vanilla JS |
 | Linting | [ESLint](https://eslint.org/) 9 + typescript-eslint |
 | Testing | [Vitest](https://vitest.dev/) 4.x + happy-dom |
@@ -104,7 +105,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 
 ## Tests
 
-26 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
+28 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
 
