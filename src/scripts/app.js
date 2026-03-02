@@ -209,27 +209,28 @@ const dateRangeBtns = document.querySelectorAll('.date-range-btn');
 
 function setDateRange(range) {
   const now = new Date();
+  const to = new Date(now.getTime() + 60 * 1000);
   let from;
 
   switch (range) {
     case '15m':
-      from = new Date(now.getTime() - 15 * 60 * 1000);
+      from = new Date(to.getTime() - 15 * 60 * 1000);
       break;
     case '1h':
-      from = new Date(now.getTime() - 1 * 60 * 60 * 1000);
+      from = new Date(to.getTime() - 1 * 60 * 60 * 1000);
       break;
     case '24h':
-      from = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      from = new Date(to.getTime() - 24 * 60 * 60 * 1000);
       break;
     case '72h':
-      from = new Date(now.getTime() - 72 * 60 * 60 * 1000);
+      from = new Date(to.getTime() - 72 * 60 * 60 * 1000);
       break;
     default:
-      from = new Date(now.getTime() - 1 * 60 * 60 * 1000);
+      from = new Date(to.getTime() - 1 * 60 * 60 * 1000);
   }
 
   filterFrom.value = toLocalDatetimeValue(from);
-  filterTo.value = toLocalDatetimeValue(now);
+  filterTo.value = toLocalDatetimeValue(to);
   state.activePreset = range;
 
   dateRangeBtns.forEach((btn) => {
@@ -449,7 +450,8 @@ function startAutoRefresh(seconds) {
     updateAutoRefreshButtons();
 
     if (state.autoRefreshRemaining <= 0) {
-      setDateRange(state.activePreset);
+      // Keep preset window sliding with current time on each refresh tick.
+      if (state.activePreset) setDateRange(state.activePreset);
       searchLogs(false);
       state.autoRefreshRemaining = state.autoRefreshSeconds;
     }
