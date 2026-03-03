@@ -512,6 +512,7 @@ function renderLogs(logs) {
     const root = log.root || '—';
     const tracker = log.tracker || '—';
     const protocol = shortenProtocol(log.protocol);
+    const clientIp = log.clientIp || '—';
     const color = statusColor(log.status);
 
     row.innerHTML = `
@@ -520,6 +521,7 @@ function renderLogs(logs) {
       <span class="font-mono truncate" title="${escapeHtml(root)}" style="color: var(--text-muted);">${escapeHtml(root)}</span>
       <span class="font-mono truncate" title="${escapeHtml(tracker)}" style="color: var(--text-muted);">${escapeHtml(tracker)}</span>
       <span class="font-mono" style="color: var(--text-secondary);">${escapeHtml(protocol)}</span>
+      <span class="font-mono truncate" title="${escapeHtml(clientIp)}" style="color: var(--text-secondary);">${escapeHtml(clientIp)}</span>
       <span class="font-mono font-medium" style="color: ${color};">${escapeHtml(log.status)}</span>
       <span class="truncate" style="color: var(--text-secondary);" title="${escapeHtml(deviceName)}">${escapeHtml(deviceName)}</span>
     `;

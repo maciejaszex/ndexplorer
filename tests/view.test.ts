@@ -38,7 +38,7 @@ describe('Log screen — desktop', () => {
     }
 
     // Log table columns
-    for (const col of ['logs.date', 'logs.domain', 'logs.root', 'logs.tracker', 'logs.protocol', 'logs.status', 'logs.device']) {
+    for (const col of ['logs.date', 'logs.domain', 'logs.root', 'logs.tracker', 'logs.protocol', 'logs.clientIp', 'logs.status', 'logs.device']) {
       expect(document.querySelector(`[data-i18n="${col}"]`)).not.toBeNull();
     }
 
@@ -106,7 +106,7 @@ describe('Log screen — mobile', () => {
     expect(document.querySelectorAll('.mobile-local-filter-item')).toHaveLength(2);
 
     // Log table columns
-    for (const col of ['logs.date', 'logs.domain', 'logs.root', 'logs.tracker', 'logs.protocol', 'logs.status', 'logs.device']) {
+    for (const col of ['logs.date', 'logs.domain', 'logs.root', 'logs.tracker', 'logs.protocol', 'logs.clientIp', 'logs.status', 'logs.device']) {
       expect(document.querySelector(`[data-i18n="${col}"]`)).not.toBeNull();
     }
 

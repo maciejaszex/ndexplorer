@@ -7,6 +7,7 @@ export interface MockLog {
   root?: string;
   tracker?: string;
   protocol?: string;
+  clientIp?: string;
   status: string;
   device?: { name?: string; model?: string };
 }
@@ -59,12 +60,14 @@ export function renderLogs(logs: MockLog[], container: HTMLElement) {
     row.dataset.tracker = log.tracker || '';
 
     const deviceName = log.device?.name || log.device?.model || '—';
+    const clientIp = log.clientIp || '—';
     row.innerHTML = `
       <span>${formatDate(log.timestamp)}</span>
       <span>${formatDomainWithRoot(log.domain, log.root)}</span>
       <span>${escapeHtml(log.root || '—')}</span>
       <span>${escapeHtml(log.tracker || '—')}</span>
       <span>${escapeHtml(shortenProtocol(log.protocol))}</span>
+      <span>${escapeHtml(clientIp)}</span>
       <span style="color: ${statusColor(log.status)}">${escapeHtml(log.status)}</span>
       <span>${escapeHtml(deviceName)}</span>
     `;

@@ -61,6 +61,7 @@
       'logs.root': 'Root',
       'logs.tracker': 'Tracker',
       'logs.protocol': 'Protokół',
+      'logs.clientIp': 'IP klienta',
       'logs.status': 'Status',
       'logs.device': 'Urządzenie',
 
@@ -138,6 +139,7 @@
       'logs.root': 'Root',
       'logs.tracker': 'Tracker',
       'logs.protocol': 'Protocol',
+      'logs.clientIp': 'Client IP',
       'logs.status': 'Status',
       'logs.device': 'Device',
 

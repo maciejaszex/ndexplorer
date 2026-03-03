@@ -186,7 +186,7 @@ body {
 
 /* Log row grid */
 .log-row {
-  grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 80px minmax(0, 1fr);
+  grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 120px 80px minmax(0, 1fr);
   border-bottom: 1px solid var(--border);
 }
 
