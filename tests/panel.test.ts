@@ -22,12 +22,12 @@ describe('Main panel — header', () => {
 });
 
 describe('Main panel — API filters', () => {
-  it('has datetime-local date inputs and preset buttons (15m, 1h, 24h, 72h)', () => {
+  it('has datetime-local date inputs and preset buttons (15m, 1h, 1d, 3d, 7d)', () => {
     expect(html).toContain('id="filter-from"');
     expect(html).toContain('id="filter-to"');
     expect(html).toMatch(/type="datetime-local"[^>]*id="filter-from"/);
     expect(html).toMatch(/type="datetime-local"[^>]*id="filter-to"/);
-    for (const r of ['15m', '1h', '24h', '72h']) {
+    for (const r of ['15m', '1h', '1d', '3d', '7d']) {
       expect(html).toContain(`data-range="${r}"`);
     }
   });
@@ -39,8 +39,11 @@ describe('Main panel — API filters', () => {
     }
   });
 
-  it('has device filter and search button with spinner', () => {
+  it('has device filter, text filter and search button with spinner', () => {
     expect(html).toContain('id="filter-device"');
+    expect(html).toContain('id="filter-text"');
+    expect(html).toContain('data-i18n="filters.text"');
+    expect(html).toContain('data-i18n-placeholder="filters.textPlaceholder"');
     expect(html).toContain('id="search-btn"');
     expect(html).toContain('id="search-btn-spinner"');
     expect(html).toMatch(/id="search-btn-spinner"[^>]*display:\s*none/);

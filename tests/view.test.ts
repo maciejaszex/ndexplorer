@@ -26,10 +26,10 @@ describe('Log screen — desktop', () => {
     expect(document.getElementById('log-counter')).not.toBeNull();
 
     // API filters
-    for (const id of ['filter-from', 'filter-to', 'filter-status', 'filter-device', 'search-btn']) {
+    for (const id of ['filter-from', 'filter-to', 'filter-status', 'filter-device', 'filter-text', 'search-btn']) {
       expect(document.getElementById(id)).not.toBeNull();
     }
-    expect(document.querySelectorAll('.date-range-btn')).toHaveLength(4);
+    expect(document.querySelectorAll('.date-range-btn')).toHaveLength(5);
     expect(document.querySelectorAll('.auto-refresh-btn')).toHaveLength(3);
 
     // Local filters

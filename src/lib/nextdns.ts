@@ -104,6 +104,7 @@ export interface LogsParams {
   to?: string;
   status?: string;
   device?: string;
+  search?: string;
   cursor?: string;
 }
 
@@ -119,6 +120,7 @@ export async function fetchLogs(params: LogsParams): Promise<LogsResponse> {
   if (params.to) url.searchParams.set('to', params.to);
   if (params.status) url.searchParams.set('status', params.status);
   if (params.device) url.searchParams.set('device', params.device);
+  if (params.search) url.searchParams.set('search', params.search);
   if (params.cursor) url.searchParams.set('cursor', params.cursor);
 
   const res = await fetch(url.toString(), {

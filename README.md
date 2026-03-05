@@ -29,7 +29,7 @@ The NextDNS dashboard doesn't offer flexible log filtering. NDExplorer gives you
 - Infinite scroll pagination
 - Auto-refresh (30s / 1m / 5m)
 - Device-based log browsing
-- Date range presets (15m, 1h, 24h, 72h)
+- Date range presets (15m, 1h, 1d, 3d, 7d)
 - Theme switcher (Dark / Light, default: Dark)
 
 All read-only — nothing is modified in your NextDNS settings.

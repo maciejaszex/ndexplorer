@@ -36,6 +36,7 @@ const filterFrom = $('#filter-from');
 const filterTo = $('#filter-to');
 const filterStatus = $('#filter-status');
 const filterDevice = $('#filter-device');
+const filterText = $('#filter-text');
 const searchBtn = $('#search-btn');
 const searchBtnText = $('#search-btn-text');
 const searchBtnSpinner = $('#search-btn-spinner');
@@ -219,11 +220,14 @@ function setDateRange(range) {
     case '1h':
       from = new Date(to.getTime() - 1 * 60 * 60 * 1000);
       break;
-    case '24h':
+    case '1d':
       from = new Date(to.getTime() - 24 * 60 * 60 * 1000);
       break;
-    case '72h':
+    case '3d':
       from = new Date(to.getTime() - 72 * 60 * 60 * 1000);
+      break;
+    case '7d':
+      from = new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
       break;
     default:
       from = new Date(to.getTime() - 1 * 60 * 60 * 1000);
@@ -358,6 +362,7 @@ async function searchLogs(isScroll) {
     }
     if (filterStatus.value) params.set('status', filterStatus.value);
     if (filterDevice.value) params.set('device', filterDevice.value);
+    if (filterText.value.trim()) params.set('search', filterText.value.trim());
     if (isScroll && state.cursor) params.set('cursor', state.cursor);
 
     const res = await fetch(`/api/logs?${params.toString()}`, { signal: controller.signal });
@@ -494,6 +499,7 @@ function formatCountdown(secs) {
 [filterStatus, filterDevice].forEach((el) => {
   el.addEventListener('change', stopAutoRefresh);
 });
+filterText.addEventListener('input', stopAutoRefresh);
 
 // ─── Render logs ────────────────────────────────────────────────────────────
 

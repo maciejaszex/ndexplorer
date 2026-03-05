@@ -13,6 +13,7 @@ export const GET: APIRoute = async ({ url }) => {
     const rawStatus = url.searchParams.get('status') || undefined;
     const rawFrom = url.searchParams.get('from') || undefined;
     const rawTo = url.searchParams.get('to') || undefined;
+    const rawSearch = url.searchParams.get('search') || undefined;
 
     if (rawStatus && !VALID_STATUSES.has(rawStatus)) {
       return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'status' }), {
@@ -38,6 +39,7 @@ export const GET: APIRoute = async ({ url }) => {
       to: rawTo,
       status: rawStatus,
       device: url.searchParams.get('device') || undefined,
+      search: rawSearch?.trim() || undefined,
       cursor: url.searchParams.get('cursor') || undefined,
     };
 

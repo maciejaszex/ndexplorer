@@ -93,8 +93,9 @@ import Layout from '../layouts/Layout.astro';
             <div class="flex gap-1">
               <button type="button" data-range="15m" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.15m">15m</button>
               <button type="button" data-range="1h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.1h">1h</button>
-              <button type="button" data-range="24h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.24h">24h</button>
-              <button type="button" data-range="72h" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.72h">72h</button>
+              <button type="button" data-range="1d" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.1d">1d</button>
+              <button type="button" data-range="3d" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.3d">3d</button>
+              <button type="button" data-range="7d" class="date-range-btn px-2 py-1.5 rounded text-xs cursor-pointer transition-colors duration-150" data-i18n="filters.range.7d">7d</button>
             </div>
           </div>
 
@@ -114,6 +115,14 @@ import Layout from '../layouts/Layout.astro';
             <select id="filter-device" class="px-2 py-1.5 rounded text-xs" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);">
               <option value="" data-i18n="filters.all">All</option>
             </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="filter-text" class="text-xs" style="color: var(--text-muted);" data-i18n="filters.text">Text</label>
+            <div class="relative">
+              <input type="text" id="filter-text" class="px-2 py-1.5 pr-6 rounded text-xs font-mono w-40" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n-placeholder="filters.textPlaceholder" placeholder="e.g. facebook" />
+              <button type="button" class="input-clear-btn" data-clear="filter-text" aria-label="Clear">&times;</button>
+            </div>
           </div>
 
           <button type="submit" id="search-btn" class="px-4 py-1.5 rounded text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: white;">
