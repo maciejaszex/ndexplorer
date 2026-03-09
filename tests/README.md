@@ -14,7 +14,7 @@ tests/
 │   ├── mocks.ts     — 17 fake log entries (DEVICE_1/DEVICE_2, ±7 days)
 │   └── dom.ts       — DOM render/filter functions mirroring app.js logic
 ├── connect.test.ts  — connect screen + mocked connect flow (6 tests)
-├── panel.test.ts    — main panel + layout + i18n (12 tests)
+├── panel.test.ts    — main panel + layout + i18n (15 tests)
 ├── logs.test.ts     — log rendering + filtering (7 tests)
 └── view.test.ts     — desktop + mobile view, scroll, input clear (3 tests)
 ```

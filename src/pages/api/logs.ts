@@ -14,6 +14,8 @@ export const GET: APIRoute = async ({ url }) => {
     const rawFrom = url.searchParams.get('from') || undefined;
     const rawTo = url.searchParams.get('to') || undefined;
     const rawSearch = url.searchParams.get('search') || undefined;
+    const rawLimit = url.searchParams.get('limit');
+    const parsedLimit = rawLimit ? parseInt(rawLimit, 10) : undefined;
 
     if (rawStatus && !VALID_STATUSES.has(rawStatus)) {
       return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'status' }), {
@@ -33,6 +35,12 @@ export const GET: APIRoute = async ({ url }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    if (rawLimit && (!Number.isInteger(parsedLimit) || parsedLimit < 10 || parsedLimit > 1000)) {
+      return new Response(JSON.stringify({ error: true, errorKey: 'error.invalidParam', detail: 'limit' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const params = {
       from: rawFrom,
@@ -40,6 +48,7 @@ export const GET: APIRoute = async ({ url }) => {
       status: rawStatus,
       device: url.searchParams.get('device') || undefined,
       search: rawSearch?.trim() || undefined,
+      limit: parsedLimit,
       cursor: url.searchParams.get('cursor') || undefined,
     };
 

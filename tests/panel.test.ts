@@ -15,9 +15,43 @@ describe('Main panel — header', () => {
   it('has theme switch in header, defaulting to dark mode', () => {
     expect(html).toContain('id="theme-toggle"');
     expect(html).toContain('id="theme-hint"');
+    expect(html).toContain('id="export-open-btn"');
     expect(html).toContain('data-i18n="theme.label"');
     expect(html).toContain('data-i18n-aria="theme.toggle"');
     expect(html).toMatch(/id="theme-toggle"[\s\S]*checked/);
+  });
+
+  it('has export modal with from/to and single-device selector', () => {
+    expect(html).toContain('id="export-modal"');
+    expect(html).toContain('id="export-from"');
+    expect(html).toContain('id="export-to"');
+    expect(html).toContain('id="export-device"');
+    expect(html).toContain('id="export-start-btn"');
+    expect(html).toContain('id="export-cancel-btn"');
+    expect(html).toContain('id="export-status"');
+  });
+
+  it('has export modal i18n labels wired', () => {
+    for (const key of [
+      'export.open',
+      'export.title',
+      'export.close',
+      'export.onlyDevice',
+      'export.selectDevice',
+      'export.maxRange',
+      'export.cancel',
+      'export.start',
+    ]) {
+      expect(html).toContain(`data-i18n="${key}"`);
+    }
+  });
+
+  it('has compact export layout and hidden range warning by default', () => {
+    expect(html).toContain('id="export-range-warning"');
+    expect(html).toContain('id="export-range-warning" class="text-xs mt-2"');
+    expect(html).toMatch(/id="export-range-warning"[^>]*display:\s*none/);
+    expect(html).toContain('grid grid-cols-2 gap-2');
+    expect(html).toContain('col-span-2');
   });
 });
 

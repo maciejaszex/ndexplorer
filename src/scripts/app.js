@@ -16,6 +16,7 @@ const state = {
   autoRefreshSeconds: null,
   autoRefreshTimerId: null,
   autoRefreshRemaining: 0,
+  exportRunning: false,
 };
 
 let searchController = null;
@@ -56,6 +57,25 @@ const arPresetHint = $('#ar-preset-hint');
 const localFilterDomain = $('#local-filter-domain');
 const localFilterTrackerSearch = $('#local-filter-tracker-search');
 const themeToggle = $('#theme-toggle');
+const exportOpenBtn = $('#export-open-btn');
+const exportModal = $('#export-modal');
+const exportCloseBtn = $('#export-close-btn');
+const exportFrom = $('#export-from');
+const exportTo = $('#export-to');
+const exportDevice = $('#export-device');
+const exportStartBtn = $('#export-start-btn');
+const exportStartText = $('#export-start-text');
+const exportStartSpinner = $('#export-start-spinner');
+const exportCancelBtn = $('#export-cancel-btn');
+const exportStatus = $('#export-status');
+const exportRangeWarning = $('#export-range-warning');
+
+const EXPORT_LIMIT = 500;
+const EXPORT_MAX_RANGE_MS = 7 * 24 * 60 * 60 * 1000;
+const EXPORT_BATCH_DELAY_MS = 1000;
+const EXPORT_TIMEOUT_MS = 15_000;
+
+let exportController = null;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -136,6 +156,102 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function toCsvCell(v) {
+  if (v === null || v === undefined) return '';
+  const s = String(v);
+  const escaped = s.replaceAll('"', '""');
+  return /[",\n\r]/.test(escaped) ? `"${escaped}"` : escaped;
+}
+
+function buildCsv(logs) {
+  const headers = [
+    'timestamp',
+    'domain',
+    'root',
+    'tracker',
+    'encrypted',
+    'protocol',
+    'clientIp',
+    'client',
+    'deviceId',
+    'deviceName',
+    'deviceModel',
+    'status',
+    'reasons',
+  ];
+
+  const lines = [headers.join(',')];
+  logs.forEach((log) => {
+    const reasons = (log.reasons || []).map((r) => r.name || r.id).join('; ');
+    const row = [
+      log.timestamp,
+      log.domain,
+      log.root || '',
+      log.tracker || '',
+      log.encrypted ?? '',
+      log.protocol || '',
+      log.clientIp || '',
+      log.client || '',
+      log.device?.id || '',
+      log.device?.name || '',
+      log.device?.model || '',
+      log.status || '',
+      reasons,
+    ].map(toCsvCell);
+
+    lines.push(row.join(','));
+  });
+
+  return `${lines.join('\n')}\n`;
+}
+
+function getExportFilename(deviceId, fromIso, toIso) {
+  const safeDevice = (deviceId || 'device').replaceAll(/[^a-zA-Z0-9_-]/g, '_');
+  const safeFrom = fromIso.replaceAll(/[:.]/g, '-');
+  const safeTo = toIso.replaceAll(/[:.]/g, '-');
+  return `ndexplorer-logs-${safeDevice}-${safeFrom}-to-${safeTo}.csv`;
+}
+
+function downloadCsv(filename, csvText) {
+  const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function waitMs(ms, signal) {
+  if (!ms) return;
+  await new Promise((resolve, reject) => {
+    const t = setTimeout(resolve, ms);
+    const onAbort = () => {
+      clearTimeout(t);
+      reject(new DOMException('Aborted', 'AbortError'));
+    };
+    if (signal) signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+async function fetchJsonWithTimeout(url, timeoutMs, signal) {
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => timeoutController.abort(), timeoutMs);
+  const abortByParent = () => timeoutController.abort();
+
+  if (signal) signal.addEventListener('abort', abortByParent, { once: true });
+
+  try {
+    const res = await fetch(url, { signal: timeoutController.signal });
+    return await res.json();
+  } finally {
+    clearTimeout(timeoutId);
+    if (signal) signal.removeEventListener('abort', abortByParent);
+  }
+}
+
 // ─── Theme ──────────────────────────────────────────────────────────────────
 
 function getStoredTheme() {
@@ -181,6 +297,196 @@ function initTheme() {
 }
 
 initTheme();
+
+// ─── Export CSV ──────────────────────────────────────────────────────────────
+
+function setExportStatus(message) {
+  if (!exportStatus) return;
+  exportStatus.textContent = message;
+  show(exportStatus);
+}
+
+function updateExportRangeWarning() {
+  if (!exportRangeWarning || !exportFrom || !exportTo) return;
+  const fromDate = new Date(exportFrom.value);
+  const toDate = new Date(exportTo.value);
+  const shouldShow =
+    !isNaN(fromDate.getTime())
+    && !isNaN(toDate.getTime())
+    && (toDate.getTime() - fromDate.getTime()) > EXPORT_MAX_RANGE_MS;
+
+  if (shouldShow) show(exportRangeWarning);
+  else hide(exportRangeWarning);
+}
+
+function syncExportDeviceOptions() {
+  if (!filterDevice || !exportDevice) return;
+  const currentValue = exportDevice.value;
+
+  exportDevice.innerHTML = '';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.dataset.i18n = 'export.selectDevice';
+  placeholder.textContent = t('export.selectDevice');
+  exportDevice.appendChild(placeholder);
+
+  [...filterDevice.options]
+    .filter((option) => option.value)
+    .forEach((option) => {
+      const clone = option.cloneNode(true);
+      exportDevice.appendChild(clone);
+    });
+
+  const hasCurrent = [...exportDevice.options].some((option) => option.value === currentValue);
+  if (currentValue && hasCurrent) {
+    exportDevice.value = currentValue;
+  } else {
+    exportDevice.value = '';
+  }
+}
+
+function openExportModal() {
+  if (!exportModal || !exportFrom || !exportTo) return;
+  const now = new Date();
+  const to = filterTo?.value ? new Date(filterTo.value) : now;
+  const from = filterFrom?.value ? new Date(filterFrom.value) : new Date(to.getTime() - 60 * 60 * 1000);
+
+  exportFrom.value = toLocalDatetimeValue(from);
+  exportTo.value = toLocalDatetimeValue(to);
+  syncExportDeviceOptions();
+  hide(exportStatus);
+  hide(exportRangeWarning);
+  show(exportModal);
+}
+
+function closeExportModal() {
+  if (state.exportRunning) return;
+  hide(exportModal);
+}
+
+function setExportUiRunning(running) {
+  state.exportRunning = running;
+  if (!exportStartBtn || !exportStartText || !exportCancelBtn) return;
+
+  exportStartBtn.disabled = running;
+  if (exportFrom) exportFrom.disabled = running;
+  if (exportTo) exportTo.disabled = running;
+  if (exportDevice) exportDevice.disabled = running;
+  if (exportCloseBtn) exportCloseBtn.disabled = running;
+
+  if (running) {
+    exportStartText.dataset.i18n = 'export.exporting';
+    exportStartText.textContent = t('export.exporting');
+    show(exportStartSpinner);
+    hide(exportStartBtn);
+    hide(exportCloseBtn);
+    show(exportCancelBtn);
+  } else {
+    exportStartText.dataset.i18n = 'export.start';
+    exportStartText.textContent = t('export.start');
+    hide(exportStartSpinner);
+    show(exportStartBtn);
+    show(exportCloseBtn);
+    hide(exportCancelBtn);
+  }
+}
+
+async function startExport() {
+  if (state.exportRunning) return;
+  if (!exportFrom || !exportTo || !exportDevice) return;
+
+  const fromDate = new Date(exportFrom.value);
+  const toDate = new Date(exportTo.value);
+  const deviceId = exportDevice.value;
+
+  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+    showToast(t('error.invalidDate'));
+    return;
+  }
+  if (toDate <= fromDate) {
+    showToast(t('export.invalidRange'));
+    return;
+  }
+  if ((toDate.getTime() - fromDate.getTime()) > EXPORT_MAX_RANGE_MS) {
+    show(exportRangeWarning);
+    return;
+  }
+  if (!deviceId) {
+    showToast(t('export.selectDevice'));
+    return;
+  }
+
+  exportController = new AbortController();
+  setExportUiRunning(true);
+
+  const allLogs = [];
+  let cursor = null;
+  let page = 0;
+
+  try {
+    do {
+      page++;
+      setExportStatus(`${t('export.downloading')} ${page}...`);
+
+      const params = new URLSearchParams();
+      params.set('from', fromDate.toISOString());
+      params.set('to', toDate.toISOString());
+      params.set('device', deviceId);
+      params.set('limit', String(EXPORT_LIMIT));
+      if (cursor) params.set('cursor', cursor);
+
+      const data = await fetchJsonWithTimeout(
+        `/api/logs?${params.toString()}`,
+        EXPORT_TIMEOUT_MS,
+        exportController.signal,
+      );
+
+      if (data.error || data.errorKey) {
+        const msg = data.errorKey ? t(data.errorKey) + (data.detail ? ` (${data.detail})` : '') : data.error;
+        throw new Error(msg);
+      }
+
+      const logs = data.data || [];
+      allLogs.push(...logs);
+      cursor = data.meta?.pagination?.cursor || null;
+
+      setExportStatus(`${t('export.exporting')} ${allLogs.length} ${t('header.logs')}`);
+      if (cursor) await waitMs(EXPORT_BATCH_DELAY_MS, exportController.signal);
+    } while (cursor);
+
+    setExportStatus(t('export.saving'));
+    const fromIso = fromDate.toISOString();
+    const toIso = toDate.toISOString();
+    const csv = buildCsv(allLogs);
+    downloadCsv(getExportFilename(deviceId, fromIso, toIso), csv);
+    setExportStatus(t('export.done'));
+  } catch (err) {
+    if (err?.name === 'AbortError') {
+      showToast(t('export.cancelled'));
+    } else {
+      showToast(err.message || t('logs.fetchError'));
+    }
+  } finally {
+    exportController = null;
+    setExportUiRunning(false);
+  }
+}
+
+if (exportOpenBtn) exportOpenBtn.addEventListener('click', openExportModal);
+if (exportCloseBtn) exportCloseBtn.addEventListener('click', closeExportModal);
+if (exportStartBtn) exportStartBtn.addEventListener('click', startExport);
+if (exportFrom) exportFrom.addEventListener('input', updateExportRangeWarning);
+if (exportTo) exportTo.addEventListener('input', updateExportRangeWarning);
+if (exportCancelBtn) {
+  exportCancelBtn.addEventListener('click', () => {
+    if (exportController) exportController.abort();
+  });
+}
+if (exportModal) {
+  exportModal.addEventListener('click', (e) => {
+    if (e.target === exportModal) closeExportModal();
+  });
+}
 
 // ─── Toast ──────────────────────────────────────────────────────────────────
 
@@ -295,6 +601,7 @@ async function handleConnect() {
       }
       filterDevice.appendChild(option);
     });
+    syncExportDeviceOptions();
 
     setDateRange('1h');
     state.connected = true;

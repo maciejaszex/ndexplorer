@@ -105,12 +105,14 @@ export interface LogsParams {
   status?: string;
   device?: string;
   search?: string;
+  limit?: number;
   cursor?: string;
 }
 
 export async function fetchLogs(params: LogsParams): Promise<LogsResponse> {
-  const { apiKey, profileId, limit } = getConfig();
+  const { apiKey, profileId, limit: configLimit } = getConfig();
   const url = new URL(`${API_BASE}/profiles/${profileId}/logs`);
+  const limit = params.limit ?? configLimit;
 
   url.searchParams.set('raw', '1');
   url.searchParams.set('sort', 'desc');

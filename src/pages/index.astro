@@ -54,6 +54,7 @@ import Layout from '../layouts/Layout.astro';
           <div id="log-counter" class="text-xs" style="color: var(--text-muted); display: none;">
             <span data-i18n="header.displayed">Displayed:</span> <span id="log-count">0</span> <span data-i18n="header.logs">logs</span>
           </div>
+          <button id="export-open-btn" type="button" class="px-3 py-1 rounded text-xs font-medium transition-opacity duration-150 cursor-pointer hover:opacity-90" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" data-i18n="export.open">Download</button>
           <div class="relative flex items-center" id="theme-toggle-wrap">
             <label class="flex items-center cursor-pointer select-none">
               <div class="relative inline-flex items-center">
@@ -152,6 +153,46 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
         </form>
+      </div>
+
+      <!-- Export modal -->
+      <div id="export-modal" class="fixed inset-0 z-50 flex items-center justify-center px-3" style="background-color: rgba(10, 12, 24, 0.72); display: none;">
+        <div class="w-full max-w-sm rounded-lg p-3" style="background-color: var(--bg-secondary); border: 1px solid var(--border);">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-sm font-semibold" style="color: var(--text-primary);" data-i18n="export.title">Export CSV</h2>
+            <button id="export-close-btn" type="button" class="text-sm cursor-pointer px-2 py-0.5 rounded" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border);" data-i18n="export.close">Close</button>
+          </div>
+
+          <p class="text-xs mb-2" style="color: var(--text-muted);" data-i18n="export.onlyDevice">Export works for one selected device only.</p>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex flex-col gap-1">
+              <label for="export-from" class="text-xs" style="color: var(--text-muted);" data-i18n="filters.from">From</label>
+              <input type="datetime-local" id="export-from" class="px-2 py-1.5 rounded text-xs font-mono" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="export-to" class="text-xs" style="color: var(--text-muted);" data-i18n="filters.to">To</label>
+              <input type="datetime-local" id="export-to" class="px-2 py-1.5 rounded text-xs font-mono" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);" />
+            </div>
+            <div class="flex flex-col gap-1 col-span-2">
+              <label for="export-device" class="text-xs" style="color: var(--text-muted);" data-i18n="filters.device">Device</label>
+              <select id="export-device" class="px-2 py-1.5 rounded text-xs" style="background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border);">
+                <option value="" data-i18n="export.selectDevice">Select one device</option>
+              </select>
+            </div>
+          </div>
+
+          <p id="export-range-warning" class="text-xs mt-2" style="color: var(--status-error); display: none;" data-i18n="export.maxRange">Maximum export range is 7 days</p>
+          <p id="export-status" class="text-xs mt-2" style="color: var(--text-secondary); display: none;"></p>
+
+          <div class="mt-3 flex items-center justify-end gap-2">
+            <button id="export-cancel-btn" type="button" class="px-3 py-1.5 rounded text-xs font-medium cursor-pointer" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); display: none;" data-i18n="export.cancel">Cancel</button>
+            <button id="export-start-btn" type="button" class="px-3 py-1.5 rounded text-xs font-medium cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: white;">
+              <span id="export-start-text" data-i18n="export.start">Download</span>
+              <span id="export-start-spinner" class="spinner spinner-sm" style="border-color: rgba(255,255,255,0.3); border-top-color: white; display: none;"></span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Local filters -->
