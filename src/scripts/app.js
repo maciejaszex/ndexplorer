@@ -258,9 +258,7 @@ function getStoredTheme() {
   let stored = null;
   try {
     stored = localStorage.getItem(THEME_STORAGE_KEY);
-  } catch {
-    stored = null;
-  }
+  } catch { /* ignore */ }
   return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME;
 }
 
