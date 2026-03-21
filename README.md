@@ -7,7 +7,7 @@
   <p align="center">
     <a href="https://github.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/github/license/maciejaszex/ndexplorer?color=blue" alt="MIT License"></a>
     <img src="https://img.shields.io/badge/node-24%2B-brightgreen" alt="Node.js 24+">
-    <img src="https://img.shields.io/badge/astro-5.x-ff5d01" alt="Astro 5">
+    <img src="https://img.shields.io/badge/astro-6.x-ff5d01" alt="Astro 6">
     <img src="https://img.shields.io/badge/tailwind-4.x-38bdf8" alt="Tailwind CSS 4">
     <img src="https://img.shields.io/badge/docker-ready-2496ED" alt="Docker">
   </p>
@@ -94,10 +94,10 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 
 | | |
 |---|---|
-| Framework | [Astro](https://astro.build/) 5.x (SSR) |
+| Framework | [Astro](https://astro.build/) 6.x (SSR) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) 4.x (dark/light themes) |
 | Client logic | Vanilla JS |
-| Linting | [ESLint](https://eslint.org/) 9 + typescript-eslint |
+| Linting | [ESLint](https://eslint.org/) 10 + typescript-eslint |
 | Testing | [Vitest](https://vitest.dev/) 4.x + happy-dom |
 | Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 11.x |
 | Git hooks | [Husky](https://typicode.github.io/husky/) 9.x |
