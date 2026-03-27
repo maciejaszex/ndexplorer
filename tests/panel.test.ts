@@ -5,6 +5,7 @@ describe('Main panel — header', () => {
   it('has branding, GitHub link, READ-ONLY badge, flags and log counter', () => {
     expect(html).toContain('NDEXPLORER');
     expect(html).toContain('https://github.com/maciejaszex/ndexplorer');
+    expect(html).toContain('https://deepwiki.com/maciejaszex/ndexplorer');
     expect(html).toContain('data-i18n="header.readonly"');
     expect(html).toContain('data-lang="pl"');
     expect(html).toContain('data-lang="en"');

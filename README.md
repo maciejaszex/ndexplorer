@@ -6,6 +6,7 @@
   </p>
   <p align="center">
     <a href="https://github.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/github/license/maciejaszex/ndexplorer?color=blue" alt="MIT License"></a>
+    <a href="https://deepwiki.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/badge/DeepWiki-docs-0ea5e9" alt="DeepWiki docs"></a>
     <img src="https://img.shields.io/badge/node-24%2B-brightgreen" alt="Node.js 24+">
     <img src="https://img.shields.io/badge/astro-6.x-ff5d01" alt="Astro 6">
     <img src="https://img.shields.io/badge/tailwind-4.x-38bdf8" alt="Tailwind CSS 4">
