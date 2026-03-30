@@ -69,6 +69,7 @@ const exportStartSpinner = $('#export-start-spinner');
 const exportCancelBtn = $('#export-cancel-btn');
 const exportStatus = $('#export-status');
 const exportRangeWarning = $('#export-range-warning');
+const logsHeaderRow = $('#logs-header-row');
 
 const EXPORT_LIMIT = 500;
 const EXPORT_MAX_RANGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -76,6 +77,8 @@ const EXPORT_BATCH_DELAY_MS = 1000;
 const EXPORT_TIMEOUT_MS = 15_000;
 
 let exportController = null;
+let activeOverflowTarget = null;
+let overflowPopover = null;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -154,6 +157,79 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function setLogsGridColumns(columns) {
+  if (!columns?.length) return;
+  const value = columns.map((w) => `${Math.round(w)}px`).join(' ');
+  document.documentElement.style.setProperty('--logs-grid-cols', value);
+}
+
+function initColumnResizing() {
+  if (!logsHeaderRow) return;
+  const cells = [...logsHeaderRow.querySelectorAll('.log-header-cell')];
+  if (cells.length < 2) return;
+
+  cells.forEach((cell, idx) => {
+    if (idx === cells.length - 1 || cell.querySelector('.col-resizer')) return;
+    const handle = document.createElement('div');
+    handle.className = 'col-resizer';
+    handle.setAttribute('aria-hidden', 'true');
+    cell.appendChild(handle);
+
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidths = cells.map((c) => c.getBoundingClientRect().width);
+      const minWidth = 70;
+
+      const onMove = (ev) => {
+        const delta = ev.clientX - startX;
+        const next = [...startWidths];
+        next[idx] = Math.max(minWidth, startWidths[idx] + delta);
+        next[idx + 1] = Math.max(minWidth, startWidths[idx + 1] - delta);
+        setLogsGridColumns(next);
+      };
+
+      const onUp = () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+function ensureOverflowPopover() {
+  if (overflowPopover) return overflowPopover;
+  overflowPopover = document.createElement('div');
+  overflowPopover.className = 'overflow-popover';
+  overflowPopover.style.display = 'none';
+  document.body.appendChild(overflowPopover);
+  return overflowPopover;
+}
+
+function showOverflowPopover(target) {
+  const text = (target.textContent || '').trim();
+  if (!text || target.scrollWidth <= target.clientWidth) return;
+  const pop = ensureOverflowPopover();
+  pop.textContent = text;
+  pop.style.display = '';
+  const rect = target.getBoundingClientRect();
+  const popRect = pop.getBoundingClientRect();
+  const left = Math.max(8, Math.min(rect.left, window.innerWidth - popRect.width - 8));
+  const top = Math.max(8, rect.top - popRect.height - 8);
+  pop.style.left = `${left}px`;
+  pop.style.top = `${top}px`;
+  activeOverflowTarget = target;
+}
+
+function hideOverflowPopover() {
+  if (!overflowPopover) return;
+  overflowPopover.style.display = 'none';
+  activeOverflowTarget = null;
 }
 
 function toCsvCell(v) {
@@ -295,6 +371,7 @@ function initTheme() {
 }
 
 initTheme();
+initColumnResizing();
 
 // ─── Export CSV ──────────────────────────────────────────────────────────────
 
@@ -828,13 +905,13 @@ function renderLogs(logs) {
 
     row.innerHTML = `
       <span class="font-mono" style="color: var(--text-secondary);">${formatDate(log.timestamp)}</span>
-      <span class="font-mono truncate" title="${escapeHtml(log.domain)}" style="color: var(--text-muted);">${formatDomainWithRoot(log.domain, log.root)}</span>
-      <span class="font-mono truncate" title="${escapeHtml(root)}" style="color: var(--text-muted);">${escapeHtml(root)}</span>
-      <span class="font-mono truncate" title="${escapeHtml(tracker)}" style="color: var(--text-muted);">${escapeHtml(tracker)}</span>
+      <span class="font-mono truncate" style="color: var(--text-muted);">${formatDomainWithRoot(log.domain, log.root)}</span>
+      <span class="font-mono truncate" style="color: var(--text-muted);">${escapeHtml(root)}</span>
+      <span class="font-mono truncate" style="color: var(--text-muted);">${escapeHtml(tracker)}</span>
       <span class="font-mono" style="color: var(--text-secondary);">${escapeHtml(protocol)}</span>
-      <span class="font-mono truncate" title="${escapeHtml(clientIp)}" style="color: var(--text-secondary);">${escapeHtml(clientIp)}</span>
+      <span class="font-mono truncate" style="color: var(--text-secondary);">${escapeHtml(clientIp)}</span>
       <span class="font-mono font-medium" style="color: ${color};">${escapeHtml(log.status)}</span>
-      <span class="truncate" style="color: var(--text-secondary);" title="${escapeHtml(deviceName)}">${escapeHtml(deviceName)}</span>
+      <span class="truncate" style="color: var(--text-secondary);">${escapeHtml(deviceName)}</span>
     `;
 
     logsData.push({
@@ -848,6 +925,21 @@ function renderLogs(logs) {
 
   logsList.appendChild(fragment);
 }
+
+if (logsList) {
+  logsList.addEventListener('mouseover', (e) => {
+    const target = e.target.closest('.truncate');
+    if (!target || target === activeOverflowTarget) return;
+    showOverflowPopover(target);
+  });
+  logsList.addEventListener('mouseout', (e) => {
+    if (!activeOverflowTarget) return;
+    const related = e.relatedTarget;
+    if (related && activeOverflowTarget.contains(related)) return;
+    hideOverflowPopover();
+  });
+}
+window.addEventListener('scroll', hideOverflowPopover, { passive: true });
 
 // ─── Local filters ──────────────────────────────────────────────────────────
 

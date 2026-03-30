@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  --logs-grid-cols: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 120px 80px minmax(0, 1fr);
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
   --bg-tertiary: #1a1a28;
@@ -186,8 +187,38 @@ body {
 
 /* Log row grid */
 .log-row {
-  grid-template-columns: 140px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 90px 120px 80px minmax(0, 1fr);
+  grid-template-columns: var(--logs-grid-cols);
   border-bottom: 1px solid var(--border);
+}
+
+.log-header-cell {
+  position: relative;
+  min-width: 0;
+  user-select: none;
+}
+
+.col-resizer {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+.overflow-popover {
+  position: fixed;
+  z-index: 60;
+  max-width: min(520px, calc(100vw - 16px));
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  background-color: var(--bg-tertiary);
+  color: var(--status-error);
+  border: 1px solid var(--border);
+  pointer-events: none;
 }
 
 /* Scroll nav buttons */
