@@ -21,21 +21,21 @@
   },
   "dependencies": {
     "@astrojs/node": "10.0.4",
-    "astro": "6.1.1"
+    "astro": "6.1.6"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@secretlint/secretlint-rule-pattern": "11.4.0",
-    "@secretlint/secretlint-rule-preset-recommend": "11.4.0",
+    "@secretlint/secretlint-rule-pattern": "11.7.1",
+    "@secretlint/secretlint-rule-preset-recommend": "11.7.1",
     "@stylistic/eslint-plugin": "5.10.0",
     "@tailwindcss/vite": "4.2.2",
-    "eslint": "10.1.0",
-    "eslint-plugin-astro": "1.6.0",
-    "happy-dom": "20.8.9",
+    "eslint": "10.2.0",
+    "eslint-plugin-astro": "1.7.0",
+    "happy-dom": "20.9.0",
     "husky": "9.1.7",
-    "secretlint": "11.4.0",
+    "secretlint": "11.7.1",
     "tailwindcss": "4.2.2",
-    "typescript-eslint": "8.57.2",
-    "vitest": "4.1.2"
+    "typescript-eslint": "8.58.2",
+    "vitest": "4.1.4"
   }
 }
