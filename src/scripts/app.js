@@ -682,6 +682,10 @@ async function handleConnect() {
     state.connected = true;
     hide(connectScreen);
     show(mainPanel);
+    if (mainPanel) {
+      mainPanel.classList.add('panel-enter');
+      setTimeout(() => mainPanel.classList.remove('panel-enter'), 260);
+    }
 
   } catch (err) {
     showToast(err.message || t('connect.error'));

@@ -34,6 +34,7 @@ The NextDNS dashboard doesn't offer flexible log filtering. NDExplorer gives you
 - Date range presets (15m, 1h, 1d, 3d, 7d)
 - CSV export modal (single device, max 7 days, paged fetch)
 - Resizable log table columns + overflow hover popovers
+- Modern cohesive visual refresh (cards, focus rings, subtle motion)
 - Theme switcher (Dark / Light, default: Dark)
 
 All read-only — nothing is modified in your NextDNS settings.

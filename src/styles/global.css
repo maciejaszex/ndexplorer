@@ -5,11 +5,13 @@
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
   --bg-tertiary: #1a1a28;
+  --bg-elevated: #181826;
   --text-primary: #e4e4e7;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --accent: #6366f1;
   --accent-hover: #818cf8;
+  --focus-ring: rgba(129, 140, 248, 0.35);
   --status-blocked: #ef4444;
   --status-allowed: #22c55e;
   --status-default: #71717a;
@@ -24,11 +26,13 @@
   --bg-primary: #f3f5fb;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e9ecf7;
+  --bg-elevated: #f8f9ff;
   --text-primary: #141826;
   --text-secondary: #3c4358;
   --text-muted: #6a718a;
   --accent: #4f46e5;
   --accent-hover: #6366f1;
+  --focus-ring: rgba(79, 70, 229, 0.26);
   --status-blocked: #dc2626;
   --status-allowed: #16a34a;
   --status-default: #6b7280;
@@ -44,13 +48,120 @@
 }
 
 body {
-  background-color: var(--bg-primary);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(99, 102, 241, 0.16), transparent 60%),
+    radial-gradient(800px 400px at 110% -20%, rgba(59, 130, 246, 0.14), transparent 60%),
+    var(--bg-primary);
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#connect-screen > div {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  animation: panel-in 220ms ease-out;
+}
+
+#main-panel > header {
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+#main-panel.panel-enter {
+  animation: panel-in 220ms ease-out;
+}
+
+#main-panel > .px-4.py-3,
+#main-panel > .px-4.py-2 {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+#filter-form input,
+#filter-form select,
+#export-modal input,
+#export-modal select,
+.mobile-local-filters input[type="text"] {
+  border-radius: 10px !important;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+#filter-form input:focus,
+#filter-form select:focus,
+#export-modal input:focus,
+#export-modal select:focus,
+.mobile-local-filters input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+#search-btn,
+#connect-btn,
+#export-start-btn {
+  border-radius: 10px;
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.35);
+}
+
+#search-btn:hover,
+#connect-btn:hover,
+#export-start-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+#export-open-btn,
+#export-cancel-btn,
+#export-close-btn {
+  border-radius: 10px !important;
+}
+
+.log-row {
+  transition: background-color 0.16s ease;
+}
+
+.log-row:hover {
+  background-color: color-mix(in srgb, var(--bg-tertiary) 55%, transparent);
+}
+
+#logs-header-row {
+  backdrop-filter: blur(6px);
+}
+
+#export-modal > div {
+  border-radius: 14px !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+  animation: panel-in 180ms ease-out;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #connect-screen > div,
+  #export-modal > div {
+    animation: none;
+  }
+  #search-btn,
+  #connect-btn,
+  #export-start-btn,
+  .log-row {
+    transition: none;
+  }
 }
 
 .font-mono {
