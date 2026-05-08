@@ -104,7 +104,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 | Client logic | Vanilla JS |
 | Linting | [ESLint](https://eslint.org/) 10 + typescript-eslint |
 | Testing | [Vitest](https://vitest.dev/) 4.x + happy-dom |
-| Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 11.x |
+| Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 13.x |
 | Git hooks | [Husky](https://typicode.github.io/husky/) 9.x |
 | Container | [Docker](https://www.docker.com/) (multi-stage build) |
 

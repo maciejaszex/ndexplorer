@@ -20,22 +20,22 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "10.0.4",
-    "astro": "6.1.6"
+    "@astrojs/node": "10.1.0",
+    "astro": "6.3.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@secretlint/secretlint-rule-pattern": "11.7.1",
-    "@secretlint/secretlint-rule-preset-recommend": "11.7.1",
+    "@secretlint/secretlint-rule-pattern": "13.0.0",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.0",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@tailwindcss/vite": "4.2.2",
-    "eslint": "10.2.0",
+    "@tailwindcss/vite": "4.2.4",
+    "eslint": "10.3.0",
     "eslint-plugin-astro": "1.7.0",
     "happy-dom": "20.9.0",
     "husky": "9.1.7",
-    "secretlint": "11.7.1",
-    "tailwindcss": "4.2.2",
-    "typescript-eslint": "8.58.2",
-    "vitest": "4.1.4"
+    "secretlint": "13.0.0",
+    "tailwindcss": "4.2.4",
+    "typescript-eslint": "8.59.2",
+    "vitest": "4.1.5"
   }
 }
