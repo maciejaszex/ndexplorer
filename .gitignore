@@ -13,19 +13,23 @@ coverage/
 .env.local
 .env.*.local
 
+# Logs
+*.log
+npm-debug.log*
+
 # OS files
 .DS_Store
 Thumbs.db
 
-# IDE / Editor
-.vscode/
+# Editors / IDEs
 .idea/
-*.swp
+.vscode/
 *.swo
+*.swp
 *~
 
-# Internal documentation
+# Internal docs (not part of the app)
 docs/
 
-# GitHub assets (uploaded via Settings, not part of the app)
+# GitHub assets (uploaded via Settings)
 assets/social-preview.jpg

@@ -98,7 +98,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 
 ## Tech stack
 
-| | |
+| Area | Stack |
 |---|---|
 | Framework | [Astro](https://astro.build/) 6.x (SSR) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) 4.x (dark/light themes) |

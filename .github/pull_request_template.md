@@ -2,7 +2,7 @@
 
 A brief summary of the change.
 
-## Checklist
+## Checklist:
 
 - [ ] `npm run lint` passes
 - [ ] `npm test` passes
