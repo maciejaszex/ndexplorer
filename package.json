@@ -4,14 +4,18 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest run --reporter=verbose",
+    "test": "vitest run --coverage --reporter=verbose",
     "test:watch": "vitest --reporter=verbose",
+    "test:coverage": "vitest run --coverage",
     "secrets": "secretlint \"**/*\"",
     "kill": "lsof -ti:4321 | xargs kill -9 2>/dev/null; echo 'Port 4321 killed...'",
     "docker:build": "docker build -t ndexplorer .",
@@ -20,22 +24,23 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "10.1.0",
-    "astro": "6.3.1"
+    "@astrojs/node": "10.1.2",
+    "astro": "6.4.2"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@secretlint/secretlint-rule-pattern": "13.0.0",
-    "@secretlint/secretlint-rule-preset-recommend": "13.0.0",
+    "@secretlint/secretlint-rule-pattern": "13.0.2",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@tailwindcss/vite": "4.2.4",
-    "eslint": "10.3.0",
+    "@tailwindcss/vite": "4.3.0",
+    "@vitest/coverage-v8": "4.1.8",
+    "eslint": "10.4.1",
     "eslint-plugin-astro": "1.7.0",
     "happy-dom": "20.9.0",
     "husky": "9.1.7",
-    "secretlint": "13.0.0",
-    "tailwindcss": "4.2.4",
-    "typescript-eslint": "8.59.2",
-    "vitest": "4.1.5"
+    "secretlint": "13.0.2",
+    "tailwindcss": "4.3.0",
+    "typescript-eslint": "8.60.0",
+    "vitest": "4.1.8"
   }
 }

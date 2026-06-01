@@ -1,78 +1,22 @@
-// DOM helpers for log rendering/filtering tests (mirrors app.js logic).
+// Thin DOM adapter over the REAL production logic in src/lib/logs.ts.
+// (Previously this file re-implemented app.js logic, which meant tests never
+// exercised the shipped code. It now delegates to the shared module.)
 // Requires happy-dom vitest environment.
 
-export interface MockLog {
-  timestamp: string;
-  domain: string;
-  root?: string;
-  tracker?: string;
-  protocol?: string;
-  clientIp?: string;
-  status: string;
-  device?: { name?: string; model?: string };
-}
+import { createLogRow, isLogVisible, rowMeta, type LogLike } from '../../src/lib/logs';
 
-export function escapeHtml(str: string) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
+export type MockLog = LogLike;
 
-export function statusColor(status: string) {
-  switch (status) {
-    case 'blocked': return 'var(--status-blocked)';
-    case 'allowed': return 'var(--status-allowed)';
-    case 'error': return 'var(--status-error)';
-    default: return 'var(--status-default)';
-  }
-}
-
-export function shortenProtocol(protocol: string | undefined) {
-  if (!protocol) return '—';
-  return protocol
-    .replace('DNS-over-HTTPS', 'DoH')
-    .replace('DNS-over-TLS', 'DoT')
-    .replace('DNS-over-QUIC', 'DoQ');
-}
-
-export function formatDate(isoString: string) {
-  const d = new Date(isoString);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-export function formatDomainWithRoot(domain: string, root?: string) {
-  if (!root || !domain) return escapeHtml(domain || '—');
-  const escaped = escapeHtml(domain);
-  const escapedRoot = escapeHtml(root);
-  const idx = escaped.lastIndexOf(escapedRoot);
-  if (idx === -1) return escaped;
-  const prefix = escaped.substring(0, idx);
-  return `${prefix}<strong class="domain-root">${escapedRoot}</strong>`;
-}
+export {
+  escapeHtml,
+  statusColor,
+  shortenProtocol,
+  formatDate,
+  formatDomainWithRoot,
+} from '../../src/lib/logs';
 
 export function renderLogs(logs: MockLog[], container: HTMLElement) {
-  logs.forEach((log) => {
-    const row = document.createElement('div');
-    row.className = 'log-row';
-    row.dataset.hasTracker = log.tracker ? 'true' : 'false';
-    row.dataset.domain = log.domain || '';
-    row.dataset.tracker = log.tracker || '';
-
-    const deviceName = log.device?.name || log.device?.model || '—';
-    const clientIp = log.clientIp || '—';
-    row.innerHTML = `
-      <span>${formatDate(log.timestamp)}</span>
-      <span>${formatDomainWithRoot(log.domain, log.root)}</span>
-      <span>${escapeHtml(log.root || '—')}</span>
-      <span>${escapeHtml(log.tracker || '—')}</span>
-      <span>${escapeHtml(shortenProtocol(log.protocol))}</span>
-      <span>${escapeHtml(clientIp)}</span>
-      <span style="color: ${statusColor(log.status)}">${escapeHtml(log.status)}</span>
-      <span>${escapeHtml(deviceName)}</span>
-    `;
-    container.appendChild(row);
-  });
+  logs.forEach((log) => container.appendChild(createLogRow(log)));
 }
 
 export function applyLocalFilters(
@@ -83,15 +27,12 @@ export function applyLocalFilters(
   let visible = 0;
 
   rows.forEach((row) => {
-    const hasTracker = row.dataset.hasTracker === 'true';
-    const domain = (row.dataset.domain || '').toLowerCase();
-    const tracker = (row.dataset.tracker || '').toLowerCase();
-    let show = true;
-
-    if (opts.hideTrackers && hasTracker) show = false;
-    if (show && opts.domainQuery && !domain.includes(opts.domainQuery.toLowerCase())) show = false;
-    if (show && opts.trackerQuery && !tracker.includes(opts.trackerQuery.toLowerCase())) show = false;
-
+    const meta = {
+      hasTracker: row.dataset.hasTracker === 'true',
+      domain: (row.dataset.domain || '').toLowerCase(),
+      tracker: (row.dataset.tracker || '').toLowerCase(),
+    };
+    const show = isLogVisible(meta, opts);
     row.style.display = show ? '' : 'none';
     if (show) visible++;
   });
@@ -108,3 +49,5 @@ export function hiddenRows(container: HTMLElement) {
   return [...container.querySelectorAll('.log-row')]
     .filter((r) => (r as HTMLElement).style.display === 'none');
 }
+
+export { rowMeta };

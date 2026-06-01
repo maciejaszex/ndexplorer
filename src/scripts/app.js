@@ -3,6 +3,19 @@
  * READ-ONLY: Only GET requests are made.
  */
 
+import {
+  escapeHtml,
+  toLocalDatetimeValue,
+  formatCountdown,
+  buildCsv,
+  getExportFilename,
+  throttle,
+  debounce,
+  createLogRow,
+  rowMeta,
+  isLogVisible,
+} from '../lib/logs';
+
 // ─── State ──────────────────────────────────────────────────────────────────
 
 const state = {
@@ -75,6 +88,9 @@ const EXPORT_LIMIT = 500;
 const EXPORT_MAX_RANGE_MS = 7 * 24 * 60 * 60 * 1000;
 const EXPORT_BATCH_DELAY_MS = 1000;
 const EXPORT_TIMEOUT_MS = 15_000;
+// Safety cap so a misbehaving/looping cursor can never spin forever
+// (500 logs/page × 2000 pages = 1M logs, far beyond any 7-day window).
+const EXPORT_MAX_PAGES = 2000;
 
 let exportController = null;
 let activeOverflowTarget = null;
@@ -84,80 +100,6 @@ let overflowPopover = null;
 
 function show(el) { if (el) el.style.display = ''; }
 function hide(el) { if (el) el.style.display = 'none'; }
-
-function throttle(fn, ms) {
-  let last = 0;
-  let timer = null;
-  return function (...args) {
-    const now = Date.now();
-    const remaining = ms - (now - last);
-    if (remaining <= 0) {
-      last = now;
-      fn.apply(this, args);
-    } else if (!timer) {
-      timer = setTimeout(() => {
-        last = Date.now();
-        timer = null;
-        fn.apply(this, args);
-      }, remaining);
-    }
-  };
-}
-
-function debounce(fn, ms) {
-  let timer = null;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), ms);
-  };
-}
-
-function formatDate(isoString) {
-  const d = new Date(isoString);
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-function toLocalDatetimeValue(date) {
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function statusColor(status) {
-  switch (status) {
-    case 'blocked': return 'var(--status-blocked)';
-    case 'allowed': return 'var(--status-allowed)';
-    case 'error': return 'var(--status-error)';
-    default: return 'var(--status-default)';
-  }
-}
-
-function shortenProtocol(protocol) {
-  if (!protocol) return '—';
-  return protocol
-    .replace('DNS-over-HTTPS', 'DoH')
-    .replace('DNS-over-TLS', 'DoT')
-    .replace('DNS-over-QUIC', 'DoQ');
-}
-
-/** Bold the root domain part inside the full domain string. */
-function formatDomainWithRoot(domain, root) {
-  if (!root || !domain) return escapeHtml(domain || '—');
-
-  const escapedDomain = escapeHtml(domain);
-  const escapedRoot = escapeHtml(root);
-  const idx = escapedDomain.lastIndexOf(escapedRoot);
-  if (idx === -1) return escapedDomain;
-
-  const prefix = escapedDomain.substring(0, idx);
-  return `${prefix}<strong class="domain-root">${escapedRoot}</strong>`;
-}
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
 
 function setLogsGridColumns(columns) {
   if (!columns?.length) return;
@@ -230,62 +172,6 @@ function hideOverflowPopover() {
   if (!overflowPopover) return;
   overflowPopover.style.display = 'none';
   activeOverflowTarget = null;
-}
-
-function toCsvCell(v) {
-  if (v === null || v === undefined) return '';
-  const s = String(v);
-  const escaped = s.replaceAll('"', '""');
-  return /[",\n\r]/.test(escaped) ? `"${escaped}"` : escaped;
-}
-
-function buildCsv(logs) {
-  const headers = [
-    'timestamp',
-    'domain',
-    'root',
-    'tracker',
-    'encrypted',
-    'protocol',
-    'clientIp',
-    'client',
-    'deviceId',
-    'deviceName',
-    'deviceModel',
-    'status',
-    'reasons',
-  ];
-
-  const lines = [headers.join(',')];
-  logs.forEach((log) => {
-    const reasons = (log.reasons || []).map((r) => r.name || r.id).join('; ');
-    const row = [
-      log.timestamp,
-      log.domain,
-      log.root || '',
-      log.tracker || '',
-      log.encrypted ?? '',
-      log.protocol || '',
-      log.clientIp || '',
-      log.client || '',
-      log.device?.id || '',
-      log.device?.name || '',
-      log.device?.model || '',
-      log.status || '',
-      reasons,
-    ].map(toCsvCell);
-
-    lines.push(row.join(','));
-  });
-
-  return `${lines.join('\n')}\n`;
-}
-
-function getExportFilename(deviceId, fromIso, toIso) {
-  const safeDevice = (deviceId || 'device').replaceAll(/[^a-zA-Z0-9_-]/g, '_');
-  const safeFrom = fromIso.replaceAll(/[:.]/g, '-');
-  const safeTo = toIso.replaceAll(/[:.]/g, '-');
-  return `ndexplorer-logs-${safeDevice}-${safeFrom}-to-${safeTo}.csv`;
 }
 
 function downloadCsv(filename, csvText) {
@@ -527,7 +413,7 @@ async function startExport() {
 
       setExportStatus(`${t('export.exporting')} ${allLogs.length} ${t('header.logs')}`);
       if (cursor) await waitMs(EXPORT_BATCH_DELAY_MS, exportController.signal);
-    } while (cursor);
+    } while (cursor && page < EXPORT_MAX_PAGES);
 
     setExportStatus(t('export.saving'));
     const fromIso = fromDate.toISOString();
@@ -872,15 +758,6 @@ function updateAutoRefreshButtons() {
   });
 }
 
-function formatCountdown(secs) {
-  if (secs >= 60) {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return s > 0 ? `${m}:${String(s).padStart(2, '0')}` : `${m}:00`;
-  }
-  return `${secs}s`;
-}
-
 // Stop auto-refresh on any API filter change
 [filterStatus, filterDevice].forEach((el) => {
   el.addEventListener('change', stopAutoRefresh);
@@ -893,37 +770,8 @@ function renderLogs(logs) {
   const fragment = document.createDocumentFragment();
 
   logs.forEach((log) => {
-    const hasTracker = !!(log.tracker);
-    const row = document.createElement('div');
-    row.className = 'px-4 py-1.5 grid gap-2 text-xs items-center log-row';
-    row.dataset.hasTracker = hasTracker ? 'true' : 'false';
-    row.dataset.domain = log.domain || '';
-    row.dataset.tracker = log.tracker || '';
-
-    const deviceName = log.device?.name || log.device?.model || '—';
-    const root = log.root || '—';
-    const tracker = log.tracker || '—';
-    const protocol = shortenProtocol(log.protocol);
-    const clientIp = log.clientIp || '—';
-    const color = statusColor(log.status);
-
-    row.innerHTML = `
-      <span class="font-mono" style="color: var(--text-secondary);">${formatDate(log.timestamp)}</span>
-      <span class="font-mono truncate" style="color: var(--text-muted);">${formatDomainWithRoot(log.domain, log.root)}</span>
-      <span class="font-mono truncate" style="color: var(--text-muted);">${escapeHtml(root)}</span>
-      <span class="font-mono truncate" style="color: var(--text-muted);">${escapeHtml(tracker)}</span>
-      <span class="font-mono" style="color: var(--text-secondary);">${escapeHtml(protocol)}</span>
-      <span class="font-mono truncate" style="color: var(--text-secondary);">${escapeHtml(clientIp)}</span>
-      <span class="font-mono font-medium" style="color: ${color};">${escapeHtml(log.status)}</span>
-      <span class="truncate" style="color: var(--text-secondary);">${escapeHtml(deviceName)}</span>
-    `;
-
-    logsData.push({
-      domain: (log.domain || '').toLowerCase(),
-      tracker: (log.tracker || '').toLowerCase(),
-      hasTracker,
-      el: row,
-    });
+    const row = createLogRow(log);
+    logsData.push({ ...rowMeta(log), el: row });
     fragment.appendChild(row);
   });
 
@@ -979,11 +827,7 @@ function applyLocalFilters() {
   const anyFilterActive = hideTrackers || domainQuery || trackerQuery;
 
   logsData.forEach((entry) => {
-    let visible = true;
-
-    if (hideTrackers && entry.hasTracker) visible = false;
-    if (visible && domainQuery && !entry.domain.includes(domainQuery)) visible = false;
-    if (visible && trackerQuery && !entry.tracker.includes(trackerQuery)) visible = false;
+    const visible = isLogVisible(entry, { hideTrackers, domainQuery, trackerQuery });
 
     entry.el.style.display = visible ? '' : 'none';
     if (visible) visibleCount++;

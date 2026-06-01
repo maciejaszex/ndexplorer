@@ -87,8 +87,9 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
 | `npm run lint:fix` | Run ESLint with auto-fix |
-| `npm test` | Run tests (Vitest) |
+| `npm test` | Run tests with coverage (Vitest) |
 | `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests and print a coverage report |
 | `npm run secrets` | Scan for leaked secrets ([Secretlint](https://github.com/secretlint/secretlint)) |
 | `npm run kill` | Kill process on port 4321 |
 | `npm run docker:build` | Build Docker image |
@@ -110,7 +111,7 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 
 ## Tests
 
-31 tests across 4 files using Vitest + happy-dom. A **pre-commit hook** runs `lint`, `test` and `secrets` in parallel before every commit.
+77 tests across 8 files using Vitest + happy-dom. Shared presentation/filtering/validation logic lives in `src/lib/` and is unit-tested directly (the suite exercises the shipped code, not a copy); the `/api/*` route handlers are tested end-to-end with a mocked upstream. Coverage of `src/lib/**` is enforced at **≥ 80%** (currently 100%). A **pre-commit hook** runs `lint`, `test` (with coverage) and `secrets` in parallel before every commit.
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
 

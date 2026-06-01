@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { MOCK_LOGS } from './utils/mocks';
 import { renderLogs } from './utils/dom';
 import { fullPageHtml } from './utils/helpers';
@@ -14,6 +14,10 @@ beforeEach(() => {
   const mainPanel = document.getElementById('main-panel')!;
   connectScreen.style.display = 'none';
   mainPanel.style.display = 'flex';
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe('Log screen — desktop', () => {
@@ -57,20 +61,19 @@ describe('Log screen — desktop', () => {
   });
 });
 
-describe('Input clear buttons', () => {
-  it('clear button empties the input and triggers input event', () => {
-    // Register clear handlers (same logic as app.js)
-    document.querySelectorAll('.input-clear-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const input = document.getElementById((btn as HTMLElement).dataset.clear!) as HTMLInputElement;
-        if (input) {
-          input.value = '';
-          input.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      });
-    });
+describe('Input clear buttons (real controller)', () => {
+  it('clear button empties the input and triggers an input event', async () => {
+    // Wire the ACTUAL controller (not a re-implementation of the handler).
+    document.body.insertAdjacentHTML(
+      'beforeend',
+      '<div id="toast-container"></div><button id="scroll-top-btn"></button><button id="scroll-bottom-btn"></button>',
+    );
+    vi.stubGlobal('t', (key: string) => key);
+    vi.stubGlobal('fetch', vi.fn(async () => ({ json: async () => ({ data: [] }) })));
+    vi.resetModules();
+    await import('../src/scripts/app.js');
 
-    for (const id of ['local-filter-domain', 'local-filter-tracker-search']) {
+    for (const id of ['local-filter-domain', 'local-filter-tracker-search', 'filter-text']) {
       const input = document.getElementById(id) as HTMLInputElement;
       const clearBtn = document.querySelector(`[data-clear="${id}"]`) as HTMLButtonElement;
       expect(clearBtn).not.toBeNull();

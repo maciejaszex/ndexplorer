@@ -1,16 +1,10 @@
 // @vitest-environment happy-dom
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { connectScreenHtml as html, fullPageHtml, translationsJs } from './utils/helpers';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { connectScreenHtml as html, fullPageHtml } from './utils/helpers';
 
 const bodyContent = fullPageHtml
   .replace(/---[\s\S]*?---/, '')
   .replace(/<\/?Layout>/g, '');
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const appJs = readFileSync(join(__dirname, '../src/scripts/app.js'), 'utf-8');
 
 beforeEach(() => {
   document.body.innerHTML = bodyContent;
@@ -19,7 +13,12 @@ beforeEach(() => {
     '<div id="toast-container"></div><button id="scroll-top-btn"></button><button id="scroll-bottom-btn"></button>',
   );
   localStorage.clear();
+  vi.resetModules();
   vi.restoreAllMocks();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe('Connect screen', () => {
@@ -64,10 +63,11 @@ describe('Connect screen', () => {
       }),
     }));
     vi.stubGlobal('fetch', fetchMock);
+    // app.js references a global `t()` provided at runtime by translations.js.
+    vi.stubGlobal('t', (key: string) => key);
 
-    // Execute browser scripts in the same order as Layout.astro
-    new Function(translationsJs)();
-    new Function(appJs)();
+    // Import the REAL controller (it wires up event listeners on import).
+    await import('../src/scripts/app.js');
 
     const connectBtn = document.getElementById('connect-btn') as HTMLButtonElement;
     const connectScreen = document.getElementById('connect-screen') as HTMLDivElement;

@@ -62,7 +62,9 @@ export async function fetchDevices(): Promise<DevicesResponse> {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new AppError('error.apiError', `${res.status}: ${text}`);
+    // Log full upstream body server-side only; never return it to the browser.
+    console.error('[nextdns] devices request failed', res.status, text);
+    throw new AppError('error.apiError', String(res.status));
   }
 
   return res.json();
@@ -133,7 +135,9 @@ export async function fetchLogs(params: LogsParams): Promise<LogsResponse> {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new AppError('error.apiError', `${res.status}: ${text}`);
+    // Log full upstream body server-side only; never return it to the browser.
+    console.error('[nextdns] logs request failed', res.status, text);
+    throw new AppError('error.apiError', String(res.status));
   }
 
   return res.json();
