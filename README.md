@@ -10,7 +10,6 @@
     <img src="https://img.shields.io/badge/node-24%2B-brightgreen" alt="Node.js 24+">
     <img src="https://img.shields.io/badge/astro-6.x-ff5d01" alt="Astro 6">
     <img src="https://img.shields.io/badge/tailwind-4.x-38bdf8" alt="Tailwind CSS 4">
-    <img src="https://img.shields.io/badge/docker-ready-2496ED" alt="Docker">
   </p>
 </p>
 
@@ -63,21 +62,6 @@ npm run dev             # open http://localhost:4321
 | `NEXTDNS_PROFILE_ID` | Your NextDNS profile ID | *(required)* |
 | `NEXTDNS_LOGS_LIMIT` | Logs per API request (10–1000) | `200` |
 
-## Docker
-
-```bash
-cp .env.example .env   # fill in your API key and profile ID
-npm run docker:build    # build image
-npm run docker:run      # run container on localhost:4321
-```
-
-Or manually:
-
-```bash
-docker build -t ndexplorer .
-docker run --rm --env-file .env -p 4321:4321 ndexplorer
-```
-
 ## Scripts
 
 | Command | Description |
@@ -92,9 +76,6 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 | `npm run test:coverage` | Run tests and print a coverage report |
 | `npm run secrets` | Scan for leaked secrets ([Secretlint](https://github.com/secretlint/secretlint)) |
 | `npm run kill` | Kill process on port 4321 |
-| `npm run docker:build` | Build Docker image |
-| `npm run docker:run` | Run Docker container |
-| `npm run docker:clean` | Remove Docker image |
 
 ## Tech stack
 
@@ -107,7 +88,6 @@ docker run --rm --env-file .env -p 4321:4321 ndexplorer
 | Testing | [Vitest](https://vitest.dev/) 4.x + happy-dom |
 | Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 13.x |
 | Git hooks | [Husky](https://typicode.github.io/husky/) 9.x |
-| Container | [Docker](https://www.docker.com/) (multi-stage build) |
 
 ## Tests
 

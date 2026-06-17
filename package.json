@@ -18,29 +18,29 @@
     "test:coverage": "vitest run --coverage",
     "secrets": "secretlint \"**/*\"",
     "kill": "lsof -ti:4321 | xargs kill -9 2>/dev/null; echo 'Port 4321 killed...'",
-    "docker:build": "docker build -t ndexplorer .",
-    "docker:run": "test -f .env && docker run --rm --env-file .env -p 4321:4321 ndexplorer",
-    "docker:clean": "docker rmi -f ndexplorer",
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "10.1.2",
-    "astro": "6.4.2"
+    "@astrojs/node": "10.1.4",
+    "astro": "6.4.7"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@secretlint/secretlint-rule-pattern": "13.0.2",
     "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@tailwindcss/vite": "4.3.0",
-    "@vitest/coverage-v8": "4.1.8",
-    "eslint": "10.4.1",
+    "@tailwindcss/vite": "4.3.1",
+    "@vitest/coverage-v8": "4.1.9",
+    "eslint": "10.5.0",
     "eslint-plugin-astro": "1.7.0",
-    "happy-dom": "20.9.0",
+    "happy-dom": "20.10.5",
     "husky": "9.1.7",
     "secretlint": "13.0.2",
-    "tailwindcss": "4.3.0",
-    "typescript-eslint": "8.60.0",
-    "vitest": "4.1.8"
+    "tailwindcss": "4.3.1",
+    "typescript-eslint": "8.61.1",
+    "vitest": "4.1.9"
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
   }
 }
