@@ -8,7 +8,7 @@
     <a href="https://github.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/github/license/maciejaszex/ndexplorer?color=blue" alt="MIT License"></a>
     <a href="https://deepwiki.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/badge/DeepWiki-docs-0ea5e9" alt="DeepWiki docs"></a>
     <img src="https://img.shields.io/badge/node-24%2B-brightgreen" alt="Node.js 24+">
-    <img src="https://img.shields.io/badge/astro-6.x-ff5d01" alt="Astro 6">
+    <img src="https://img.shields.io/badge/astro-7.x-ff5d01" alt="Astro 7">
     <img src="https://img.shields.io/badge/tailwind-4.x-38bdf8" alt="Tailwind CSS 4">
   </p>
 </p>
@@ -81,11 +81,11 @@ npm run dev             # open http://localhost:4321
 
 | Area | Stack |
 |---|---|
-| Framework | [Astro](https://astro.build/) 6.x (SSR) |
+| Framework | [Astro](https://astro.build/) 7.x (SSR) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) 4.x (dark/light themes) |
 | Client logic | Vanilla JS |
 | Linting | [ESLint](https://eslint.org/) 10 + typescript-eslint |
-| Testing | [Vitest](https://vitest.dev/) 4.x + happy-dom |
+| Testing | [Vitest](https://vitest.dev/) 5.x + happy-dom |
 | Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 13.x |
 | Git hooks | [Husky](https://typicode.github.io/husky/) 9.x |
 

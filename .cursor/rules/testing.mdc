@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Testing
 
-- **Vitest 4.x** + **happy-dom** for DOM tests, **@vitest/coverage-v8** for coverage
+- **Vitest 5.x** + **happy-dom** for DOM tests, **@vitest/coverage-v8** for coverage
 - Pragmatic — one `it()` covers a full scenario, not individual edge cases
 - **Test the shipped code, never re-implement it.** Shared logic lives in `src/lib/` (`logs.ts`, `nextdns.ts`, `validation.ts`); import it directly. `tests/utils/dom.ts` is a thin adapter over `src/lib/logs.ts`, not a copy. The `/api/*` route handlers are imported and tested directly in `api.test.ts`
 - Mock data in `tests/utils/mocks.ts` (17 fake logs, no real data); mock `fetch`/env for `nextdns` tests
