@@ -8,6 +8,7 @@ const srcDir = join(__dirname, '../../src');
 const pageHtml = readFileSync(join(srcDir, 'pages/index.astro'), 'utf-8');
 const layoutHtml = readFileSync(join(srcDir, 'layouts/Layout.astro'), 'utf-8');
 const translationsJs = readFileSync(join(srcDir, 'i18n/translations.js'), 'utf-8');
+const globalCss = readFileSync(join(srcDir, 'styles/global.css'), 'utf-8');
 
 const mainPanelStart = pageHtml.indexOf('id="main-panel"');
 
@@ -18,4 +19,4 @@ export const connectScreenHtml = pageHtml.slice(
 
 export const mainPanelHtml = pageHtml.slice(mainPanelStart);
 export const fullPageHtml = pageHtml;
-export { layoutHtml, translationsJs };
+export { layoutHtml, translationsJs, globalCss };

@@ -38,6 +38,15 @@ describe('Connect screen', () => {
     expect(html).toContain('https://github.com/maciejaszex/ndexplorer');
   });
 
+  it('uses connect-hero branding without a middot footer separator', () => {
+    expect(html).toContain('connect-hero');
+    expect(html).toContain('connect-brand');
+    expect(html).toContain('connect-footer');
+    // No "NDExplorer · github..." — just the clean repo link
+    expect(html).not.toMatch(/NDExplorer\s*&middot;/i);
+    expect(html).not.toMatch(/NDExplorer\s*·/);
+  });
+
   it('connect screen is visible and main panel is hidden by default', () => {
     // connect-screen has no display:none
     expect(fullPageHtml).toMatch(/id="connect-screen"[^>]*class="[^"]*flex/);

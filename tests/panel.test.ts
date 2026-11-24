@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mainPanelHtml as html, layoutHtml, translationsJs } from './utils/helpers';
+import { mainPanelHtml as html, layoutHtml, translationsJs, globalCss } from './utils/helpers';
 
 describe('Main panel — header', () => {
   it('has branding, GitHub link, READ-ONLY badge, flags and log counter', () => {
@@ -11,6 +11,16 @@ describe('Main panel — header', () => {
     expect(html).toContain('data-lang="en"');
     expect(html).toContain('id="log-counter"');
     expect(html).toContain('id="log-count"');
+  });
+
+  it('styles GitHub and DeepWiki as quiet header-ext-link buttons', () => {
+    const gh = html.match(/href="https:\/\/github\.com\/maciejaszex\/ndexplorer"[\s\S]*?<\/a>/);
+    const dw = html.match(/href="https:\/\/deepwiki\.com\/maciejaszex\/ndexplorer"[\s\S]*?<\/a>/);
+    expect(gh?.[0]).toContain('header-ext-link');
+    expect(dw?.[0]).toContain('header-ext-link');
+    // Not the old solid-accent pill style
+    expect(gh?.[0]).not.toMatch(/background-color:\s*var\(--accent\)/);
+    expect(dw?.[0]).not.toMatch(/background-color:\s*var\(--accent\)/);
   });
 
   it('has theme switch in header, defaulting to dark mode', () => {
@@ -93,6 +103,11 @@ describe('Main panel — API filters', () => {
     expect(html).toContain('id="ar-preset-hint"');
     expect(html).toContain('data-i18n="autorefresh.hint"');
   });
+
+  it('auto-refresh hint wraps instead of overflowing with nowrap', () => {
+    expect(html).toContain('class="ar-preset-hint');
+    expect(html).not.toMatch(/id="ar-preset-hint"[^>]*whitespace-nowrap/);
+  });
 });
 
 describe('Main panel — local filters', () => {
@@ -106,6 +121,11 @@ describe('Main panel — local filters', () => {
 });
 
 describe('Main panel — log list area', () => {
+  it('keeps the log column header sticky while scrolling', () => {
+    expect(html).toContain('id="logs-header-row"');
+    expect(globalCss).toMatch(/#logs-header-row\s*\{[^}]*position:\s*sticky/s);
+  });
+
   it('has all state containers (empty, loading, no-results, list, scroll-loader, end)', () => {
     for (const id of ['logs-empty', 'logs-loading', 'logs-no-results', 'logs-list', 'logs-scroll-loader', 'logs-end']) {
       expect(html).toContain(`id="${id}"`);

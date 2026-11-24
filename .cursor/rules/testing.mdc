@@ -10,7 +10,7 @@ alwaysApply: false
 - Pragmatic — one `it()` covers a full scenario, not individual edge cases
 - **Test the shipped code, never re-implement it.** Shared logic lives in `src/lib/` (`logs.ts`, `nextdns.ts`, `validation.ts`); import it directly. `tests/utils/dom.ts` is a thin adapter over `src/lib/logs.ts`, not a copy. The `/api/*` route handlers are imported and tested directly in `api.test.ts`
 - Mock data in `tests/utils/mocks.ts` (17 fake logs, no real data); mock `fetch`/env for `nextdns` tests
-- Helpers in `tests/utils/` — test files contain only assertions
+- Helpers in `tests/utils/` — test files contain only assertions (`helpers.ts` also loads `global.css` for style-structure checks)
 - All UI text must be tested for both PL and EN key parity
 - **Coverage of `src/lib/**` must stay ≥ 80%** (threshold enforced in `vitest.config.ts`)
 - Run: `npm test` (single, with coverage), `npm run test:watch` (watch), `npm run test:coverage`
