@@ -7,7 +7,7 @@
   <p align="center">
     <a href="https://github.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/github/license/maciejaszex/ndexplorer?color=blue" alt="MIT License"></a>
     <a href="https://deepwiki.com/maciejaszex/ndexplorer"><img src="https://img.shields.io/badge/DeepWiki-docs-0ea5e9" alt="DeepWiki docs"></a>
-    <img src="https://img.shields.io/badge/node-24%2B-brightgreen" alt="Node.js 24+">
+    <img src="https://img.shields.io/badge/node-26%2B-brightgreen" alt="Node.js 26+">
     <img src="https://img.shields.io/badge/astro-7.x-ff5d01" alt="Astro 7">
     <img src="https://img.shields.io/badge/tailwind-4.x-38bdf8" alt="Tailwind CSS 4">
   </p>
@@ -33,14 +33,14 @@ The NextDNS dashboard doesn't offer flexible log filtering. NDExplorer gives you
 - Date range presets (15m, 1h, 1d, 3d, 7d)
 - CSV export modal (single device, max 7 days, paged fetch)
 - Resizable log table columns + overflow hover popovers
-- Modern cohesive visual refresh (cards, focus rings, subtle motion)
+- Sticky log table header, cool slate/cyan theme (dark/light)
 - Theme switcher (Dark / Light, default: Dark)
 
 All read-only — nothing is modified in your NextDNS settings.
 
 ## Requirements
 
-- **Node.js** 24+ (see `.nvmrc`)
+- **Node.js** 26+ (see `.nvmrc`)
 - **NextDNS API key** — [get it here](https://my.nextdns.io/account)
 - **NextDNS profile ID** — visible in your dashboard URL (e.g. `abc123` from `https://my.nextdns.io/abc123/...`)
 
@@ -49,6 +49,7 @@ All read-only — nothing is modified in your NextDNS settings.
 ```bash
 git clone https://github.com/maciejaszex/ndexplorer.git
 cd ndexplorer
+nvm use                 # Node 26 from .nvmrc
 cp .env.example .env    # fill in your API key and profile ID
 npm install
 npm run dev             # open http://localhost:4321
@@ -86,12 +87,12 @@ npm run dev             # open http://localhost:4321
 | Client logic | Vanilla JS |
 | Linting | [ESLint](https://eslint.org/) 10 + typescript-eslint |
 | Testing | [Vitest](https://vitest.dev/) 5.x + happy-dom |
-| Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 13.x |
+| Secret scanning | [Secretlint](https://github.com/secretlint/secretlint) 14.x |
 | Git hooks | [Husky](https://typicode.github.io/husky/) 9.x |
 
 ## Tests
 
-77 tests across 8 files using Vitest + happy-dom. Shared presentation/filtering/validation logic lives in `src/lib/` and is unit-tested directly (the suite exercises the shipped code, not a copy); the `/api/*` route handlers are tested end-to-end with a mocked upstream. Coverage of `src/lib/**` is enforced at **≥ 80%** (currently 100%). A **pre-commit hook** runs `lint`, `test` (with coverage) and `secrets` in parallel before every commit.
+81 tests across 8 files using Vitest + happy-dom. Shared presentation/filtering/validation logic lives in `src/lib/` and is unit-tested directly (the suite exercises the shipped code, not a copy); the `/api/*` route handlers are tested end-to-end with a mocked upstream. Coverage of `src/lib/**` is enforced at **≥ 80%** (currently 100%). A **pre-commit hook** runs `lint`, `test` (with coverage) and `secrets` in parallel before every commit.
 
 See [`tests/README.md`](tests/README.md) for strategy, structure and mock data approach.
 

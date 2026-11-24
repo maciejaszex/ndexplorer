@@ -11,8 +11,11 @@ Thanks for your interest! This is a small personal project, but contributions ar
 
 ## Development setup
 
+Requires **Node.js 26+** (see `.nvmrc`).
+
 ```bash
-cp .env.example .env   # fill in your credentials
+nvm use                 # matches .nvmrc
+cp .env.example .env    # fill in your credentials
 npm install
 npm run dev
 ```
@@ -21,7 +24,8 @@ npm run dev
 
 - Keep it simple — vanilla JS, no frameworks on the client
 - Follow existing code style (ESLint will enforce it)
-- Write tests for new features when practical
+- Shared logic belongs in `src/lib/` — tests import that code, do not re-implement it
+- Write tests for new features when practical (`npm test` enforces ≥ 80% coverage on `src/lib/**`)
 - UI text must support both PL and EN (see `src/i18n/translations.js`)
 
 ## Reporting bugs

@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "astro dev",
@@ -21,26 +21,21 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "11.1.6",
-    "astro": "7.3.3"
+    "@astrojs/node": "11.1.14",
+    "astro": "7.4.13"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@secretlint/secretlint-rule-pattern": "13.0.5",
-    "@secretlint/secretlint-rule-preset-recommend": "13.0.5",
-    "@stylistic/eslint-plugin": "5.10.0",
-    "@tailwindcss/vite": "4.3.3",
-    "@vitest/coverage-v8": "5.0.1",
-    "eslint": "10.11.0",
+    "@stylistic/eslint-plugin": "6.0.1",
+    "@tailwindcss/vite": "4.3.5",
+    "@vitest/coverage-v8": "5.1.1",
+    "eslint": "10.15.0",
     "eslint-plugin-astro": "3.2.1",
-    "happy-dom": "20.14.5",
+    "happy-dom": "21.0.4",
     "husky": "9.1.7",
-    "secretlint": "13.0.5",
-    "tailwindcss": "4.3.3",
-    "typescript-eslint": "8.70.0",
-    "vitest": "5.0.1"
-  },
-  "overrides": {
-    "esbuild": "0.28.1"
+    "secretlint": "14.1.0",
+    "tailwindcss": "4.3.5",
+    "typescript-eslint": "8.74.0",
+    "vitest": "5.1.1"
   }
 }
