@@ -7,11 +7,9 @@ import Layout from '../layouts/Layout.astro';
 
     <!-- Connect screen -->
     <div id="connect-screen" class="flex-1 flex items-center justify-center">
-      <div class="text-center">
-        <h1 class="text-3xl font-bold mb-2 tracking-tight" style="color: var(--text-primary);">
-          NDEXPLORER
-        </h1>
-        <p class="text-sm mb-6" style="color: var(--text-muted);" data-i18n="app.subtitle">
+      <div class="connect-hero text-center mx-auto">
+        <h1 class="connect-brand">NDEXPLORER</h1>
+        <p class="connect-subtitle" data-i18n="app.subtitle">
           NextDNS Log Explorer
         </p>
 
@@ -22,16 +20,15 @@ import Layout from '../layouts/Layout.astro';
 
         <button
           id="connect-btn"
-          class="px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 mx-auto"
-          style="background-color: var(--accent); color: white;"
+          class="px-7 py-3.5 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 mx-auto"
+          style="background-color: var(--accent); color: var(--on-accent);"
         >
           <span id="connect-btn-text" data-i18n="connect.button">Connect to NextDNS</span>
-          <span id="connect-btn-spinner" class="spinner spinner-sm" style="border-color: rgba(255,255,255,0.3); border-top-color: white; display: none;"></span>
+          <span id="connect-btn-spinner" class="spinner spinner-sm" style="border-color: color-mix(in srgb, var(--on-accent) 30%, transparent); border-top-color: var(--on-accent); display: none;"></span>
         </button>
 
-        <div class="mt-10 text-xs" style="color: var(--text-muted);">
-          NDExplorer &middot;
-          <a href="https://github.com/maciejaszex/ndexplorer" target="_blank" rel="noopener noreferrer" class="underline hover:no-underline" style="color: var(--text-secondary);">github.com/maciejaszex/ndexplorer</a>
+        <div class="connect-footer">
+          <a href="https://github.com/maciejaszex/ndexplorer" target="_blank" rel="noopener noreferrer">github.com/maciejaszex/ndexplorer</a>
         </div>
       </div>
     </div>
@@ -50,16 +47,14 @@ import Layout from '../layouts/Layout.astro';
             href="https://github.com/maciejaszex/ndexplorer"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs px-2 py-0.5 rounded hover:opacity-90 transition-opacity duration-150"
-            style="background-color: var(--accent); color: white; border: 1px solid var(--accent-hover);"
+            class="header-ext-link text-xs px-2.5 py-0.5 transition-opacity duration-150"
             title="GitHub"
           >GitHub</a>
           <a
             href="https://deepwiki.com/maciejaszex/ndexplorer"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs px-2 py-0.5 rounded hover:opacity-90 transition-opacity duration-150"
-            style="background-color: var(--accent); color: white; border: 1px solid var(--accent-hover);"
+            class="header-ext-link text-xs px-2.5 py-0.5 transition-opacity duration-150"
             title="DeepWiki"
           >DeepWiki</a>
         </div>
@@ -139,9 +134,9 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
 
-          <button type="submit" id="search-btn" class="px-4 py-1.5 rounded text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: white;">
+          <button type="submit" id="search-btn" class="px-4 py-1.5 rounded text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: var(--on-accent);">
             <span id="search-btn-text" data-i18n="filters.search">Search</span>
-            <span id="search-btn-spinner" class="spinner spinner-sm" style="border-color: rgba(255,255,255,0.3); border-top-color: white; display: none;"></span>
+            <span id="search-btn-spinner" class="spinner spinner-sm" style="border-color: color-mix(in srgb, var(--on-accent) 30%, transparent); border-top-color: var(--on-accent); display: none;"></span>
           </button>
 
           <div class="mx-1 self-stretch mobile-filter-separator" style="width: 1px; background-color: var(--border);"></div>
@@ -161,7 +156,7 @@ import Layout from '../layouts/Layout.astro';
                 <span class="ar-label">5m</span>
               </button>
             </div>
-            <div id="ar-preset-hint" class="absolute left-0 -top-7 px-2 py-1 rounded text-xs whitespace-nowrap" style="background-color: var(--bg-tertiary); color: var(--status-error); border: 1px solid var(--border); display: none;" data-i18n="autorefresh.hint">
+            <div id="ar-preset-hint" class="ar-preset-hint px-2 py-1 rounded text-xs" style="display: none;" data-i18n="autorefresh.hint">
               Auto-refresh requires the "15m" or "1h" preset
             </div>
           </div>
@@ -200,9 +195,9 @@ import Layout from '../layouts/Layout.astro';
 
           <div class="mt-3 flex items-center justify-end gap-2">
             <button id="export-cancel-btn" type="button" class="px-3 py-1.5 rounded text-xs font-medium cursor-pointer" style="background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); display: none;" data-i18n="export.cancel">Cancel</button>
-            <button id="export-start-btn" type="button" class="px-3 py-1.5 rounded text-xs font-medium cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: white;">
+            <button id="export-start-btn" type="button" class="px-3 py-1.5 rounded text-xs font-medium cursor-pointer flex items-center gap-2" style="background-color: var(--accent); color: var(--on-accent);">
               <span id="export-start-text" data-i18n="export.start">Download</span>
-              <span id="export-start-spinner" class="spinner spinner-sm" style="border-color: rgba(255,255,255,0.3); border-top-color: white; display: none;"></span>
+              <span id="export-start-spinner" class="spinner spinner-sm" style="border-color: color-mix(in srgb, var(--on-accent) 30%, transparent); border-top-color: var(--on-accent); display: none;"></span>
             </button>
           </div>
         </div>

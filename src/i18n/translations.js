@@ -62,7 +62,7 @@
 
       // Auto-refresh
       'autorefresh.label': 'Auto-refresh',
-      'autorefresh.hint': 'Auto-refresh wymaga presetu „15m" lub „1h"',
+      'autorefresh.hint': 'Wymaga presetu 15m lub 1h',
 
       // Local filters
       'filters.local': 'Filtry lokalne:',
@@ -157,7 +157,7 @@
 
       // Auto-refresh
       'autorefresh.label': 'Auto-refresh',
-      'autorefresh.hint': 'Auto-refresh requires the "15m" or "1h" preset',
+      'autorefresh.hint': 'Requires the 15m or 1h preset',
 
       // Local filters
       'filters.local': 'Local Filters:',
